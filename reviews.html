@@ -39,6 +39,28 @@
 
     .reviews-sort {
       min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      color: #1f1f1f;
+    }
+
+    .reviews-sort label {
+      margin-bottom: 0;
+      color: inherit;
+    }
+
+    .reviews-sort select {
+      background-color: #ffffff;
+      border: 1px solid #ced4da;
+      color: #1f1f1f;
+    }
+
+    .review-stars {
+      color: #f4b400;
+      letter-spacing: 0.08em;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     @media (max-width: 991px) {
@@ -181,7 +203,7 @@
           <div class="item-wrapper">
             <div class="card-box align-left">
               <p class="card-text mbr-fonts-style display-7">${message}</p>
-              <div class="mbr-text mbr-fonts-style display-7" aria-label="${clampedRating} out of 5 stars">
+              <div class="mbr-text mbr-fonts-style display-7 review-stars" aria-label="${clampedRating} out of 5 stars">
                 <span aria-hidden="true">${stars}</span>
               </div>
               <h5 class="card-title mbr-fonts-style display-7">${name}</h5>

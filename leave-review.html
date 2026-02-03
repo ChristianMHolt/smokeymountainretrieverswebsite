@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leave a Review | Smokey Mountain Retrievers</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Smokey Mountain Retrievers</h1>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="testimonials.html">Testimonials</a>
+          <a href="leave-review.html" aria-current="page">Leave a Review</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-header">
+        <div class="container">
+          <h2>Leave a Review</h2>
+          <p>
+            We love hearing about your pup. Share a quick review and we may
+            feature it on our testimonials page.
+          </p>
+        </div>
+      </section>
+
+      <section class="review-form-section">
+        <div class="container">
+          <form class="review-form" action="#" method="post">
+            <label for="reviewer-name">Your name</label>
+            <input
+              id="reviewer-name"
+              name="reviewer-name"
+              type="text"
+              placeholder="Jane Doe"
+              required
+            />
+
+            <label for="reviewer-email">Email address</label>
+            <input
+              id="reviewer-email"
+              name="reviewer-email"
+              type="email"
+              placeholder="you@example.com"
+              required
+            />
+
+            <label for="reviewer-rating">Star rating</label>
+            <select id="reviewer-rating" name="reviewer-rating" required>
+              <option value="">Select a rating</option>
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Great</option>
+              <option value="3">3 - Good</option>
+              <option value="2">2 - Fair</option>
+              <option value="1">1 - Needs improvement</option>
+            </select>
+
+            <label for="reviewer-message">Your review</label>
+            <textarea
+              id="reviewer-message"
+              name="reviewer-message"
+              rows="6"
+              placeholder="Tell us about your Smokey Mountain Retriever."
+              required
+            ></textarea>
+
+            <button class="button" type="submit">Submit review</button>
+          </form>
+
+          <div class="review-note">
+            <h3>What happens next?</h3>
+            <p>
+              We read every submission and may follow up for a photo or an update.
+              Thank you for being part of our community!
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© 2024 Smokey Mountain Retrievers. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,494 +1,666 @@
-<!DOCTYPE html>
-<html  >
+<!doctype html>
+<html lang="en">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.0.6, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/x-icon">
-  <meta name="description" content="">
-  
-  
-  <title>Home</title>
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="assets/animatecss/animate.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="stylesheet" href="assets/gallery/style.css">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=b85cvj"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=b85cvj" type="text/css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smoky Mountain Retrievers</title>
+  <meta name="description" content="Healthy, affordable Golden Retriever puppies raised with care in East Tennessee." />
+
+  <link rel="icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+
+  <!-- Inter Tight (Mobirise-like) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    .testimonials-header {
-      display: flex;
+    :root{
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;
+      --surface: #ffffff;
+      --surface-2: #f7faf8;
+      --border: rgba(17, 24, 39, .10);
+
+      --text: #0f172a;
+      --muted: rgba(15, 23, 42, .70);
+
+      --brand: #2fbf71;
+      --brand-2: #a7f3d0;
+      --brand-soft: rgba(47, 191, 113, .12);
+
+      --star: #f59e0b;
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      --radius: 18px;
+    }
+
+    html{ scroll-behavior: smooth; }
+
+    body{
+      font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
+      color: var(--text);
+    }
+
+    /* Navbar */
+    .site-nav{
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-lockup{
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none;
+    }
+    .brand-lockup img{ width: 40px; height:auto; }
+    .brand-lockup span{
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: var(--text);
+    }
+    .nav-link{
+      color: rgba(15,23,42,.75) !important;
+      font-weight: 800;
+    }
+    .nav-link:hover{ color: var(--brand) !important; }
+
+    .navbar-toggler{ border-color: rgba(15,23,42,.20); }
+    .navbar-toggler-icon{
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2815, 23, 42, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Common */
+    .section{ padding: 4rem 0; }
+    .section-title{
+      font-weight: 950;
+      letter-spacing: -.6px;
+      font-size: clamp(1.7rem, 1.4vw + 1.2rem, 2.6rem);
+      margin: 0;
+      text-align: center;
+    }
+    .section-subtitle{
+      margin: .85rem auto 0;
+      max-width: 55rem;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: 1.05rem;
+    }
+
+    .panel{
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.92));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .card-lite{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+    }
+
+    /* Buttons */
+    .btn-primary{
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .75rem 1.05rem;
+      box-shadow: 0 10px 18px rgba(47,191,113,.22);
+    }
+    .btn-primary:hover{ background:#26aa64; border-color:#26aa64; }
+    .btn-outline-primary{
+      border-color: rgba(47,191,113,.45);
+      color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .75rem 1.05rem;
+      background: rgba(255,255,255,.8);
+    }
+    .btn-outline-primary:hover{
+      background: rgba(47,191,113,.10);
+      border-color: rgba(47,191,113,.55);
+      color: #1e9e5d;
+    }
+
+    /* Hero */
+    .hero{ padding: 4.25rem 0 2.5rem; }
+    .hero h1{
+      font-weight: 980;
+      letter-spacing: -.9px;
+      line-height: 1.05;
+      font-size: clamp(2.2rem, 3vw + 1rem, 3.6rem);
+      margin: 0;
+      text-align: center;
+    }
+    .hero p{
+      margin: 1rem auto 0;
+      max-width: 58rem;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: 1.08rem;
+    }
+    .hero-actions{
+      margin-top: 1.5rem;
+      display:flex;
+      justify-content:center;
+      gap: .75rem;
       flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
+    }
+    .hero-img{
+      margin-top: 2rem;
+      border-radius: calc(var(--radius) + 10px);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+    .hero-img img{ width: 100%; height: auto; display:block; }
+
+    /* Gallery */
+    .gallery-grid{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
       gap: 1rem;
-      text-align: center;
+      margin-top: 1.75rem;
+    }
+    .gallery-item{
+      grid-column: span 3;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(15,23,42,.08);
+      background: var(--surface);
+      cursor: pointer;
+      transition: transform .15s ease;
+    }
+    .gallery-item:hover{ transform: translateY(-2px); }
+    .gallery-item img{ width:100%; height: 100%; object-fit: cover; display:block; aspect-ratio: 4 / 3; }
+
+    @media (max-width: 991.98px){
+      .gallery-item{ grid-column: span 6; }
+    }
+    @media (max-width: 575.98px){
+      .gallery-item{ grid-column: span 12; }
+    }
+
+    /* Testimonials */
+    .testimonials-header{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.75rem;
+    }
+    .testimonials-actions{
+      display:flex;
+      gap:.65rem;
+      flex-wrap: wrap;
+    }
+
+    .reviews-grid{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .review-card{
+      grid-column: span 4;
+      padding: 1.25rem;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .review-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(47,191,113,.35);
+    }
+    .review-message{
+      margin: 0 0 .9rem;
+      color: var(--text);
+      font-weight: 600;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .review-meta{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding-top: .65rem;
+      border-top: 1px dashed rgba(15,23,42,.14);
+    }
+    .review-name{
+      margin: 0;
+      font-weight: 950;
+      color: rgba(15,23,42,.75);
+      letter-spacing: .1px;
+    }
+
+    .stars{
+      display:flex;
+      align-items:center;
+      gap:.2rem;
+      flex-shrink: 0;
+    }
+    .star{
+      width: 18px;
+      height: 18px;
+      color: rgba(245,158,11,.25);
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.10));
+    }
+    .star.filled{ color: var(--star); }
+
+    @media (max-width: 991.98px){
+      .review-card{ grid-column: span 6; }
+    }
+    @media (max-width: 575.98px){
+      .review-card{ grid-column: span 12; }
+    }
+
+    /* Contact form */
+    .form-label{
+      font-weight: 900;
+      color: rgba(15,23,42,.78);
+      margin-bottom: .35rem;
+    }
+    .form-control{
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .form-control:focus{
+      outline: none;
+      box-shadow: 0 0 0 .22rem var(--brand-soft);
+      border-color: rgba(47,191,113,.45);
+    }
+
+    /* Contacts + map */
+    .contact-grid{
+      display:grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 1rem;
+      margin-top: 1.75rem;
+    }
+    .contact-card{ padding: 1.25rem; }
+    .contact-card h3{
+      margin: 0 0 .75rem;
+      font-weight: 980;
+      letter-spacing: -.3px;
+    }
+    .contact-list{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display:flex;
       flex-direction: column;
+      gap: .55rem;
+      color: rgba(15,23,42,.78);
+      font-weight: 700;
+    }
+    .contact-list a{ color: var(--brand); text-decoration: none; font-weight: 950; }
+    .contact-list a:hover{ text-decoration: underline; }
+
+    .map-card{ overflow: hidden; }
+    .map-embed{
+      width: 100%;
+      height: 100%;
+      min-height: 340px;
+      border: 0;
+      display:block;
+      filter: saturate(1.05);
     }
 
-    .testimonials-header .mbr-section-title,
-    .testimonials-header .mbr-text {
-      text-align: center;
+    @media (max-width: 991.98px){
+      .contact-grid{ grid-template-columns: 1fr; }
+      .map-embed{ min-height: 320px; }
     }
 
-    .testimonials-header-actions {
-      margin-left: 0;
+    /* Footer */
+    footer{
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(10px);
+      padding: 2.25rem 0;
     }
-
-    #people04-1i .mbr-masonry {
-      margin-bottom: 2.5rem;
+    footer a{
+      color: var(--brand);
+      font-weight: 950;
+      text-decoration:none;
     }
-
-    #people04-1i {
-      padding-bottom: 4rem;
-    }
-
-    .review-stars {
-      color: #f4b400;
-      letter-spacing: 0.08em;
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    @media (max-width: 991px) {
-      .testimonials-header {
-        justify-content: center;
-      }
-
-      .testimonials-header .mbr-section-title,
-      .testimonials-header .mbr-text {
-        text-align: center;
-      }
-
-      .testimonials-header-actions {
-        margin-left: 0;
-      }
-    }
+    footer a:hover{ text-decoration: underline; }
+    .footer-muted{ color: var(--muted); font-weight: 700; margin-top: .35rem; }
   </style>
-
-  
-  
-  
 </head>
+
 <body>
-  
-  <section data-bs-version="5.1" class="menu menu2 cid-tJS6tZXiPa" once="menu" id="menu02-0">
-	
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg site-nav sticky-top">
+    <div class="container py-2">
+      <a class="brand-lockup" href="index.html">
+        <img src="assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers logo">
+        <span>Smoky Mountain Retrievers</span>
+      </a>
 
-	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
-		<div class="container">
-			<div class="navbar-brand">
-				<span class="navbar-logo">
-					<a href="https://mobirise.com">
-						<img src="assets/images/smokymountainretrieverslogo-96x91.png" alt="Mobirise Website Builder" style="height: 3rem;">
-					</a>
-				</span>
-				<span class="navbar-caption-wrap"><a class="navbar-caption text-black text-primary display-4" href="index.html#header05-1">Smoky Mountain Retrievers</a></span>
-			</div>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-				<div class="hamburger">
-					<span></span>
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-						<a class="nav-link link text-black text-primary display-4" href="index.html#header01-7">About</a>
-					</li>
-					
-					<li class="nav-item">
-						<a class="nav-link link text-black text-primary display-4" href="index.html#contacts02-9">Contacts</a>
-					</li></ul>
-				
-				
-			</div>
-		</div>
-	</nav>
-</section>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-<section data-bs-version="5.1" class="header5 cid-tJS6uM4N87" id="header05-1">
-	
-
-	
-	
-	<div class="topbg"></div>
-	<div class="align-center container">
-		<div class="row justify-content-center">
-			<div class="col-md-12 col-lg-9">
-				<h1 class="mbr-section-title mbr-fonts-style mb-4 display-1"><strong>Smoky Mountain Retrievers CO</strong><strong><br></strong></h1>
-				<p class="mbr-text mbr-fonts-style mb-4 display-7">At Smoky Mountain Retrievers, we’re dedicated to raising beautiful, loving Golden Retrievers who will be loyal companions for years to come.
-<br>
-<br>Our focus is on healthy, affordable family pets rather than titled show or breeding dogs. While our dogs are not bred for competition, we place a strong emphasis on genetic health. All of our puppies have a 0% coefficient of inbreeding (COI), meaning there is no inbreeding or linebreeding in their background. This helps ensure a healthier, more resilient companion without the risks that can come with heavily inbred lines.
-<br>
-<br>Every puppy we raise comes with a two-week health guarantee, a full vaccination record, and a consistent deworming schedule beginning at two weeks of age. We take pride in offering Golden Retrievers that are not only beautiful, but also well-cared for and ready to become a cherished part of your family.</p>
-				
-			</div>
-		</div>
-		<div class="row mt-5 justify-content-center">
-			<div class="col-12 col-lg-12">
-				<img src="assets/images/img-12-2238x2984.png" alt="Mobirise Website Builder" title="">
-			</div>
-		</div>
-	</div>
-</section>
-
-<section data-bs-version="5.1" class="gallery1 mbr-gallery cid-tMlDYtQ5fF" id="gallery02-v">
-    
-
-    
-    
-
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-12 content-head">
-                <div class="mbr-section-head mb-5">
-                    <h3 class="mbr-section-title mbr-fonts-style align-center m-0 display-2"><strong>Gallery with Masonry Grid and Popup Slider</strong></h3>
-                    <h4 class="mbr-section-subtitle mbr-fonts-style align-center mb-0 mt-4 display-7">Use images of different sizes in this gallery. Click on the image to change it. Click on the + (Add Items) button to add multiple pictures at once.</h4>
-                </div>
-            </div>
-        </div>
-        <div class="row mbr-gallery mbr-masonry" data-masonry="{&quot;percentPosition&quot;: true }">
-            <div class="col-12 col-md-6 col-lg-3 item gallery-image">
-                <div class="item-wrapper" data-toggle="modal" data-bs-toggle="modal" data-target="#vabtY87bll-modal" data-bs-target="#vabtY87bll-modal">
-                    <img class="w-100" src="assets/images/bear-511x582.png" alt="Mobirise Website Builder" data-slide-to="0" data-bs-slide-to="0" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll">
-                    <div class="icon-wrapper">
-                        <span class="mobi-mbri mobi-mbri-search mbr-iconfont mbr-iconfont-btn"></span>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 item gallery-image">
-                <div class="item-wrapper" data-toggle="modal" data-bs-toggle="modal" data-target="#vabtY87bll-modal" data-bs-target="#vabtY87bll-modal">
-                    <img class="w-100" src="assets/images/maple-511x595.png" alt="Mobirise Website Builder" data-slide-to="1" data-bs-slide-to="1" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll">
-                    <div class="icon-wrapper">
-                        <span class="mobi-mbri mobi-mbri-search mbr-iconfont mbr-iconfont-btn"></span>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 item gallery-image">
-                <div class="item-wrapper" data-toggle="modal" data-bs-toggle="modal" data-target="#vabtY87bll-modal" data-bs-target="#vabtY87bll-modal">
-                    <img class="w-100" src="assets/images/img-672-511x681.png" alt="Mobirise Website Builder" data-slide-to="2" data-bs-slide-to="2" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll">
-                    <div class="icon-wrapper">
-                        <span class="mobi-mbri mobi-mbri-search mbr-iconfont mbr-iconfont-btn"></span>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 item gallery-image">
-                <div class="item-wrapper" data-toggle="modal" data-bs-toggle="modal" data-target="#vabtY87bll-modal" data-bs-target="#vabtY87bll-modal">
-                    <img class="w-100" src="assets/images/lastlitter-511x383.png" alt="Mobirise Website Builder" data-slide-to="3" data-bs-slide-to="3" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll">
-                    <div class="icon-wrapper">
-                        <span class="mobi-mbri mobi-mbri-search mbr-iconfont mbr-iconfont-btn"></span>
-                    </div>
-                </div>
-                
-            </div>
-            
-            
-            
-        </div>
-
-        <div class="modal mbr-slider" tabindex="-1" role="dialog" aria-hidden="true" id="vabtY87bll-modal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="carousel slide" id="lb-vabtY87bll" data-interval="5000" data-bs-interval="5000">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img class="d-block w-100" src="assets/images/bear-511x582.png" alt="Mobirise Website Builder">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="assets/images/maple-511x595.png" alt="Mobirise Website Builder">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="assets/images/img-672-511x681.png" alt="Mobirise Website Builder">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="assets/images/lastlitter-511x383.png" alt="Mobirise Website Builder">
-                                </div>
-                                
-                                
-                                
-                            </div>
-                            <ol class="carousel-indicators">
-                                <li data-slide-to="0" data-bs-slide-to="0" class="active" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll"></li>
-                                <li data-slide-to="1" data-bs-slide-to="1" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll"></li>
-                                <li data-slide-to="2" data-bs-slide-to="2" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll"></li>
-                                <li data-slide-to="3" data-bs-slide-to="3" data-target="#lb-vabtY87bll" data-bs-target="#lb-vabtY87bll"></li>
-                                
-                                
-                                
-                            </ol>
-                            <a role="button" href="" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
-                            </a>
-                            <a class="carousel-control-prev carousel-control" role="button" data-slide="prev" data-bs-slide="prev" href="#lb-vabtY87bll">
-                                <span class="mobi-mbri mobi-mbri-arrow-prev" aria-hidden="true"></span>
-                                <span class="sr-only visually-hidden">Previous</span>
-                            </a>
-                            <a class="carousel-control-next carousel-control" role="button" data-slide="next" data-bs-slide="next" href="#lb-vabtY87bll">
-                                <span class="mobi-mbri mobi-mbri-arrow-next" aria-hidden="true"></span>
-                                <span class="sr-only visually-hidden">Next</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navMain">
+        <ul class="navbar-nav align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contacts</a></li>
+          <li class="nav-item"><a class="nav-link" href="all-reviews.html">All Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" href="review.html">Leave a Review</a></li>
+        </ul>
+      </div>
     </div>
-</section>
+  </nav>
 
-<section data-bs-version="5.1" class="people04 cid-vabt7nEDrq" id="people04-1i">
-	
-	
-	<div class="container">
-		<div class="row mb-5 justify-content-center">
-			<div class="col-12 mb-0 content-head testimonials-header">
-				<div>
-					<h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-						<strong>Testimonials</strong>
-					</h3>
-					<p class="mbr-text mbr-fonts-style align-center mt-4 display-7">Have a story to share? We’d love to hear from you.</p>
-					<div class="align-center mt-3">
-						<a class="btn btn-primary display-7" href="review.html">Leave a Review</a>
-					</div>
-				</div>
-				<div class="testimonials-header-actions">
-					<a class="btn btn-primary btn-sm display-7" href="reviews.html">See all reviews</a>
-				</div>
-			</div>
-		</div>
-		<div class="row mbr-masonry" id="testimonials-list" data-masonry="{&quot;percentPosition&quot;: true }">
-			<div class="col-12">
-				<p class="mbr-text mbr-fonts-style align-center display-7" id="testimonials-status">Loading reviews...</p>
-			</div>
-		</div>
-	</div>
-</section>
-
-<section data-bs-version="5.1" class="form5 cid-tJS9pBcTSa" id="form02-6">
-    
-    
+  <!-- HERO / ABOUT -->
+  <header class="hero" id="about">
     <div class="container">
-        <div class="mbr-section-head mb-5">
-            <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-                <strong>Contact Form</strong></h3>
-            <h4 class="mbr-section-subtitle mbr-fonts-style align-center mb-0 mt-4 display-7">To change your notification email, click on any form field below.
-<div>The number of submissions is limited to 10 per day without the Form Builder.</div></h4>
+      <div class="panel">
+        <h1>Smoky Mountain Retrievers CO</h1>
+        <p>
+          At Smoky Mountain Retrievers, we’re dedicated to raising beautiful, loving Golden Retrievers who will be loyal companions for years to come.
+          <br><br>
+          Our focus is on healthy, affordable family pets rather than titled show or breeding dogs. While our dogs are not bred for competition, we place a strong
+          emphasis on genetic health. All of our puppies have a 0% coefficient of inbreeding (COI), meaning there is no inbreeding or linebreeding in their background.
+          This helps ensure a healthier, more resilient companion without the risks that can come with heavily inbred lines.
+          <br><br>
+          Every puppy we raise comes with a two-week health guarantee, a full vaccination record, and a consistent deworming schedule beginning at two weeks of age.
+          We take pride in offering Golden Retrievers that are not only beautiful, but also well-cared for and ready to become a cherished part of your family.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="review.html">Leave a Review</a>
+          <a class="btn btn-outline-primary" href="all-reviews.html">See All Reviews</a>
+          <a class="btn btn-outline-primary" href="#contact">Contact</a>
         </div>
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
-                <form action="https://mobirise.eu/" method="POST" class="mbr-form form-with-styler" data-form-title="Form Name"><input type="hidden" name="email" data-form-email="true" value="J2vvhsZ3s/qO5g/I3VBGktWJAzFp0ZZlcfpMyH2h0Nlk+eTvXLRPITqyTF711Powl+MZfm8DGdtYQaP8biYScAILwVLJMUkOuO4IoGbk7FuS9L8/UwyHGQDlhHFsz+bu">
-                    <div class="row">
-                        <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Thanks for filling out the form!</div>
-                        <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">
-                            Oops...! some problem!
-                        </div>
-                    </div>
-                    <div class="dragArea row">
-                        <div class="col-md col-sm-12 form-group mb-3" data-for="name">
-                            <input type="text" name="name" placeholder="Name" data-form-field="name" class="form-control" value="" id="name-form02-6">
-                        </div>
-                        <div class="col-md col-sm-12 form-group mb-3" data-for="email">
-                            <input type="email" name="email" placeholder="Email" data-form-field="email" class="form-control" value="" id="email-form02-6">
-                        </div>
-                        <div class="col-12 form-group mb-3" data-for="phone">
-                            <input type="tel" name="phone" placeholder="Phone" data-form-field="phone" class="form-control" value="" id="phone-form02-6">
-                        </div>
-                        <div class="col-12 form-group mb-3" data-for="textarea">
-                            <textarea name="textarea" placeholder="Message" data-form-field="textarea" class="form-control" id="textarea-form02-6"></textarea>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
-                            <button type="submit" class="btn btn-primary display-7">Send message</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+
+        <div class="hero-img mt-4">
+          <img src="assets/images/img-12-2238x2984.png" alt="Smoky Mountain Retrievers" />
         </div>
+      </div>
     </div>
-</section>
+  </header>
 
-<section data-bs-version="5.1" class="contacts2 map1 cid-tLdYHD757A" id="contacts02-9">
-
-    
-
-    
+  <!-- GALLERY -->
+  <section class="section" id="gallery">
     <div class="container">
-        <div class="mbr-section-head mb-5">
-            <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-                <strong>Contacts</strong>
-            </h3>
-            
+      <h2 class="section-title">Gallery</h2>
+      <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
+
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Replace images/paths as needed -->
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png">
+          <img src="assets/images/bear-511x582.png" alt="Gallery image 1">
         </div>
-        <div class="row justify-content-center mt-4">
-            <div class="card col-12 col-md-5">
-                <div class="card-wrapper">
-                    <div class="text-wrapper">
-                        <h5 class="cardTitle mbr-fonts-style mb-2 display-5">
-                        <strong>Get in touch</strong></h5>
-                    <ul class="list mbr-fonts-style display-7">
-                        <li class="mbr-text item-wrap"><span style="font-size: 1.4rem;">Phone: (865) 617-1364&nbsp;</span></li>
-                        <li class="mbr-text item-wrap">Email: smokymountainretrievers@gmail.com</li><li class="mbr-text item-wrap"><br></li>
-                        <li class="mbr-text item-wrap">Address: </li><li class="mbr-text item-wrap">Liberty Rd, Cosby, TN 37722</li><li class="mbr-text item-wrap"><span style="font-size: 1.4rem;">Working hours:</span><br></li><li class="mbr-text item-wrap">9:00AM - 7:30PM</li>
-                    </ul>
-                    </div>
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/maple-511x595.png">
+          <img src="assets/images/maple-511x595.png" alt="Gallery image 2">
+        </div>
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/img-672-511x681.png">
+          <img src="assets/images/img-672-511x681.png" alt="Gallery image 3">
+        </div>
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/lastlitter-511x383.png">
+          <img src="assets/images/lastlitter-511x383.png" alt="Gallery image 4">
+        </div>
+      </div>
+    </div>
+
+    <!-- Simple gallery modal -->
+    <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 18px; overflow:hidden;">
+          <div class="modal-body p-0">
+            <img id="galleryModalImg" src="" alt="Expanded gallery" style="width:100%; height:auto; display:block;">
+          </div>
+          <div class="modal-footer" style="justify-content:center;">
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <h2 class="section-title">Testimonials</h2>
+      <p class="section-subtitle">Have a story to share? We’d love to hear from you.</p>
+
+      <div class="testimonials-header">
+        <div class="testimonials-actions">
+          <a class="btn btn-primary" href="review.html">Leave a Review</a>
+          <a class="btn btn-outline-primary" href="all-reviews.html">See All Reviews</a>
+        </div>
+      </div>
+
+      <div id="testimonials-status" class="section-subtitle" style="margin-top: 1.25rem;">Loading reviews…</div>
+      <div class="reviews-grid" id="testimonials-grid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT FORM -->
+  <section class="section" id="contact">
+    <div class="container">
+      <h2 class="section-title">Contact</h2>
+      <p class="section-subtitle">Send a message and we’ll get back to you as soon as possible.</p>
+
+      <div class="row justify-content-center mt-4">
+        <div class="col-12 col-lg-8">
+          <div class="card-lite p-4">
+            <!-- Replace this form action with your actual handler if you have one -->
+            <form action="https://mobirise.eu/" method="POST">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="contact-name">Name</label>
+                  <input class="form-control" id="contact-name" name="name" type="text" placeholder="Name" required />
                 </div>
-            </div>
-            <div class="map-wrapper col-12 col-md-7">
-                <div class="google-map"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDbnCmnHmtigIYiD8jIfeHQv7gW2ANhHD4&amp;q=4322 Liberty Rd Cosby TN, 37722" allowfullscreen=""></iframe></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section data-bs-version="5.1" class="footer1 programm5 cid-tJS9NNcTLZ" once="footers" id="footer03-8">
-
-        
-
-    
-
-    <div class="container">
-        <div class="row">
-
-            <div class="row-links mb-4">
-                <ul class="header-menu">
-                  
-                  
-                  
-                  
-                <li class="header-menu-item mbr-fonts-style display-5"><a href="index.html#header01-7" class="text-danger">About</a></li><li class="header-menu-item mbr-fonts-style display-5"><a href="index.html#features04-w" class="text-danger text-primary">Services</a></li><li class="header-menu-item mbr-fonts-style display-5"><a href="index.html#contacts02-9" class="text-danger">Contacts</a></li><li class="header-menu-item mbr-fonts-style display-5"><a href="index.html#gallery02-v" class="text-danger text-primary">Works</a></li></ul>
+                <div class="col-md-6">
+                  <label class="form-label" for="contact-email">Email</label>
+                  <input class="form-control" id="contact-email" name="email" type="email" placeholder="Email" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="contact-phone">Phone</label>
+                  <input class="form-control" id="contact-phone" name="phone" type="tel" placeholder="Phone" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="contact-message">Message</label>
+                  <textarea class="form-control" id="contact-message" name="textarea" rows="6" placeholder="Message" required></textarea>
+                </div>
+                <div class="col-12 d-grid">
+                  <button class="btn btn-primary" type="submit">Send message</button>
+                </div>
               </div>
-
-            <div class="col-12">
-                <div class="social-row">
-                    <div class="soc-item">
-                        <a href="https://mobiri.se/" target="_blank">
-                            <span class="mbr-iconfont socicon socicon-facebook display-7"></span>
-                        </a>
-                    </div>
-                    <div class="soc-item">
-                        <a href="https://mobiri.se/" target="_blank">
-                            <span class="mbr-iconfont socicon-twitter socicon"></span>
-                        </a>
-                    </div>
-                    <div class="soc-item">
-                        <a href="https://mobiri.se/" target="_blank">
-                            <span class="mbr-iconfont socicon-instagram socicon"></span>
-                        </a>
-                    </div>
-                    <div class="soc-item">
-                        <a href="https://mobiri.se/" target="_blank">
-                            <span class="mbr-iconfont socicon-tiktok socicon"></span>
-                        </a>
-                    </div>
-                    <div class="soc-item">
-                        <a href="https://mobiri.se/" target="_blank">
-                            <span class="mbr-iconfont socicon-youtube socicon"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mt-5">
-                <p class="mbr-fonts-style copyright display-7">
-                    © Copyright 2030 Mobirise - All Rights Reserved
-                </p>
-            </div>
+            </form>
+            <p class="section-subtitle" style="margin-top: 1rem;">
+              For urgent questions, calling is usually fastest.
+            </p>
+          </div>
         </div>
+      </div>
+
+      <!-- CONTACTS + MAP -->
+      <div class="contact-grid mt-4">
+        <div class="card-lite contact-card">
+          <h3>Get in touch</h3>
+          <ul class="contact-list">
+            <li><strong>Phone:</strong> (865) 617-1364</li>
+            <li><strong>Email:</strong> <a href="mailto:smokymountainretrievers@gmail.com">smokymountainretrievers@gmail.com</a></li>
+            <li><strong>Area:</strong> Liberty Rd, Cosby, TN 37722</li>
+            <li><strong>Hours:</strong> 9:00 AM – 7:30 PM</li>
+          </ul>
+          <p class="section-subtitle" style="text-align:left; margin-top: 1rem;">
+            For privacy, the map shows a general area instead of a specific street number.
+          </p>
+        </div>
+
+        <div class="card-lite map-card">
+          <!-- PRIVACY-SAFE: no street number -->
+          <!-- If you prefer to remove the API key from the public HTML entirely, tell me and I’ll switch to the “pb” embed format. -->
+          <iframe
+            class="map-embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDbnCmnHmtigIYiD8jIfeHQv7gW2ANhHD4&q=Liberty%20Rd,%20Cosby,%20TN%2037722">
+          </iframe>
+        </div>
+      </div>
     </div>
-</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4119736" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com">Mobirise </a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/masonry/masonry.pkgd.min.js"></script>  <script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>  <script src="assets/theme/js/script.js"></script>  <script src="assets/gallery/player.min.js"></script>  <script src="assets/gallery/script.js"></script>  <script src="assets/formoid/formoid.min.js"></script>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container text-center">
+      <div>
+        <a href="#about">Back to top</a>
+      </div>
+      <div class="footer-muted">© Smoky Mountain Retrievers</div>
+    </div>
+  </footer>
+
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    const testimonialsList = document.getElementById("testimonials-list");
+    // --- Gallery modal
+    const modalImg = document.getElementById("galleryModalImg");
+    document.getElementById("gallery-grid")?.addEventListener("click", (e) => {
+      const item = e.target.closest(".gallery-item");
+      if (!item) return;
+      const full = item.getAttribute("data-full");
+      if (modalImg && full) modalImg.src = full;
+    });
+
+    // --- Reviews (safe rendering + SVG stars)
+    const testimonialsGrid = document.getElementById("testimonials-grid");
     const testimonialsStatus = document.getElementById("testimonials-status");
 
-    const normalizeReviews = (payload) => {
-      if (Array.isArray(payload)) {
-        return payload;
-      }
-      if (payload && Array.isArray(payload.reviews)) {
-        return payload.reviews;
-      }
+    function normalizeReviews(payload) {
+      if (Array.isArray(payload)) return payload;
+      if (payload && Array.isArray(payload.reviews)) return payload.reviews;
       return [];
-    };
+    }
 
-    const parseRating = (value) => {
-      if (typeof value === "number" && !Number.isNaN(value)) {
-        return value;
-      }
+    function parseRating(value) {
+      if (typeof value === "number" && !Number.isNaN(value)) return value;
       if (typeof value === "string") {
         const match = value.match(/[\d.]+/);
         return match ? Number(match[0]) : 0;
       }
       return 0;
-    };
+    }
 
-    const renderReviews = (reviews) => {
-      const previewReviews = reviews.slice(0, 6);
-      testimonialsList.innerHTML = "";
-      if (!previewReviews.length) {
-        testimonialsList.innerHTML = `
-          <div class="col-12">
-            <p class="mbr-text mbr-fonts-style align-center display-7">No reviews yet. Be the first to share your story!</p>
-          </div>
-        `;
+    function clampRating(r) {
+      const n = Number(r);
+      if (Number.isNaN(n)) return 0;
+      return Math.max(0, Math.min(5, n));
+    }
+
+    function makeStarSVG(filled) {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("class", "star" + (filled ? " filled" : ""));
+      svg.setAttribute("aria-hidden", "true");
+
+      const path = document.createElementNS(svgNS, "path");
+      path.setAttribute("fill", "currentColor");
+      path.setAttribute("d",
+        "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+      );
+      svg.appendChild(path);
+      return svg;
+    }
+
+    function renderStars(rating) {
+      const r = clampRating(rating);
+      const filledCount = Math.round(r);
+
+      const wrap = document.createElement("div");
+      wrap.className = "stars";
+      wrap.setAttribute("role", "img");
+      wrap.setAttribute("aria-label", `${r} out of 5 stars`);
+
+      for (let i = 1; i <= 5; i++) {
+        wrap.appendChild(makeStarSVG(i <= filledCount));
+      }
+      return wrap;
+    }
+
+    function clear(node){
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function renderReviewCards(reviews) {
+      if (!testimonialsGrid) return;
+
+      clear(testimonialsGrid);
+
+      const preview = reviews.slice(0, 6);
+      if (!preview.length) {
+        testimonialsStatus.textContent = "No reviews yet. Be the first to share your story!";
         return;
       }
 
-      previewReviews.forEach((review) => {
+      testimonialsStatus.textContent = "";
+
+      for (const review of preview) {
         const name = review.name || "Happy Customer";
         const message = review.message || "";
-        const ratingValue = parseRating(review.rating);
-        const clampedRating = Math.min(Math.max(ratingValue, 0), 5);
-        const stars = "★★★★★".slice(0, clampedRating).padEnd(5, "☆");
+        const rating = clampRating(parseRating(review.rating));
 
-        const item = document.createElement("div");
-        item.className = "item features-without-image col-12 col-md-6 col-lg-4";
-        item.innerHTML = `
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <p class="card-text mbr-fonts-style display-7">${message}</p>
-              <div class="mbr-text mbr-fonts-style display-7 review-stars" aria-label="${clampedRating} out of 5 stars">
-                <span aria-hidden="true">${stars}</span>
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">${name}</h5>
-            </div>
-          </div>
-        `;
-        testimonialsList.appendChild(item);
-      });
-    };
+        const card = document.createElement("article");
+        card.className = "card-lite review-card";
 
-    const loadTestimonials = async () => {
+        const msg = document.createElement("p");
+        msg.className = "review-message";
+        msg.textContent = message;
+
+        const meta = document.createElement("div");
+        meta.className = "review-meta";
+
+        const who = document.createElement("p");
+        who.className = "review-name";
+        who.textContent = name;
+
+        meta.appendChild(who);
+        meta.appendChild(renderStars(rating));
+
+        card.appendChild(msg);
+        card.appendChild(meta);
+
+        testimonialsGrid.appendChild(card);
+      }
+    }
+
+    async function loadTestimonials() {
       try {
-        const response = await fetch("/reviews");
-        if (!response.ok) {
-          throw new Error("Failed to load reviews.");
-        }
-        const payload = await response.json();
-        const reviews = normalizeReviews(payload);
-        renderReviews(reviews);
-      } catch (error) {
+        const res = await fetch("/reviews", { headers: { "Accept": "application/json" } });
+        if (!res.ok) throw new Error("Failed to load reviews.");
+        const payload = await res.json();
+        renderReviewCards(normalizeReviews(payload));
+      } catch (e) {
         if (testimonialsStatus) {
           testimonialsStatus.textContent = "Reviews are unavailable right now. Please check back soon.";
         }
       }
-    };
-
-    if (testimonialsList) {
-      loadTestimonials();
     }
+
+    loadTestimonials();
   </script>
-  
-  
-  <input name="animation" type="hidden">
-  </body>
+</body>
 </html>

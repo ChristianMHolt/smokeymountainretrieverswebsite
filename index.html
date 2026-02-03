@@ -213,26 +213,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="row mbr-masonry" data-masonry="{&quot;percentPosition&quot;: true }">
-			
-			<div class="item features-without-image col-12 col-md-6 col-lg-4 active">
-				<div class="item-wrapper">
-					<div class="card-box align-left">
-						<p class="card-text mbr-fonts-style display-7"></p>
-						<div class="mbr-text mbr-fonts-style display-7" aria-label="5 out of 5 stars">
-							<span aria-hidden="true">★★★★★</span>
-						</div>
-						<div class="img-wrapper mt-4 mb-2">
-							<img src="assets/images/team2.jpg" data-slide-to="1" data-bs-slide-to="1" alt="">
-						</div>
-						<h5 class="card-title mbr-fonts-style display-7"></h5>
-					</div>
-				</div>
+		<div class="row mbr-masonry" id="testimonials-list" data-masonry="{&quot;percentPosition&quot;: true }">
+			<div class="col-12">
+				<p class="mbr-text mbr-fonts-style align-center display-7" id="testimonials-status">Loading reviews...</p>
 			</div>
-			
-			
-			
-			
 		</div>
 	</div>
 </section>
@@ -366,7 +350,76 @@
             </div>
         </div>
     </div>
-</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4119736" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com">Mobirise </a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/masonry/masonry.pkgd.min.js"></script>  <script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>  <script src="assets/theme/js/script.js"></script>  <script src="assets/gallery/player.min.js"></script>  <script src="assets/gallery/script.js"></script>  <script src="assets/formoid/formoid.min.js"></script>  
+</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4119736" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com">Mobirise </a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/masonry/masonry.pkgd.min.js"></script>  <script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>  <script src="assets/theme/js/script.js"></script>  <script src="assets/gallery/player.min.js"></script>  <script src="assets/gallery/script.js"></script>  <script src="assets/formoid/formoid.min.js"></script>
+  <script>
+    const testimonialsList = document.getElementById("testimonials-list");
+    const testimonialsStatus = document.getElementById("testimonials-status");
+
+    const normalizeReviews = (payload) => {
+      if (Array.isArray(payload)) {
+        return payload;
+      }
+      if (payload && Array.isArray(payload.reviews)) {
+        return payload.reviews;
+      }
+      return [];
+    };
+
+    const renderReviews = (reviews) => {
+      testimonialsList.innerHTML = "";
+      if (!reviews.length) {
+        testimonialsList.innerHTML = `
+          <div class="col-12">
+            <p class="mbr-text mbr-fonts-style align-center display-7">No reviews yet. Be the first to share your story!</p>
+          </div>
+        `;
+        return;
+      }
+
+      reviews.forEach((review) => {
+        const name = review.name || "Happy Customer";
+        const message = review.message || "";
+        const ratingValue = Number(review.rating) || 0;
+        const clampedRating = Math.min(Math.max(ratingValue, 0), 5);
+        const stars = "★★★★★".slice(0, clampedRating).padEnd(5, "☆");
+
+        const item = document.createElement("div");
+        item.className = "item features-without-image col-12 col-md-6 col-lg-4";
+        item.innerHTML = `
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <p class="card-text mbr-fonts-style display-7">${message}</p>
+              <div class="mbr-text mbr-fonts-style display-7" aria-label="${clampedRating} out of 5 stars">
+                <span aria-hidden="true">${stars}</span>
+              </div>
+              <h5 class="card-title mbr-fonts-style display-7">${name}</h5>
+            </div>
+          </div>
+        `;
+        testimonialsList.appendChild(item);
+      });
+    };
+
+    const loadTestimonials = async () => {
+      try {
+        const response = await fetch("/reviews");
+        if (!response.ok) {
+          throw new Error("Failed to load reviews.");
+        }
+        const payload = await response.json();
+        const reviews = normalizeReviews(payload);
+        renderReviews(reviews);
+      } catch (error) {
+        if (testimonialsStatus) {
+          testimonialsStatus.textContent = "Reviews are unavailable right now. Please check back soon.";
+        }
+      }
+    };
+
+    if (testimonialsList) {
+      loadTestimonials();
+    }
+  </script>
   
   
   <input name="animation" type="hidden">

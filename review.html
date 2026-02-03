@@ -1,120 +1,473 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.0.6, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/x-icon">
-  <meta name="description" content="">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leave a Review | Smoky Mountain Retrievers</title>
+  <meta name="description" content="Share your experience with Smoky Mountain Retrievers." />
 
-  <title>Leave a Review</title>
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="assets/animatecss/animate.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="stylesheet" href="assets/gallery/style.css">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=b85cvj"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=b85cvj" type="text/css">
+  <link rel="icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+
+  <!-- Matches your Mobirise font choice -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;
+      --surface: #ffffff;
+      --surface-2: #f7faf8;
+      --border: rgba(17, 24, 39, .10);
+
+      --text: #0f172a;
+      --muted: rgba(15, 23, 42, .70);
+
+      --brand: #2fbf71;
+      --brand-2: #a7f3d0;
+      --brand-soft: rgba(47, 191, 113, .12);
+
+      --danger: #dc2626;
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      --radius: 18px;
+    }
+
+    body{
+      font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .site-nav{
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-lockup{
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none;
+    }
+    .brand-lockup img{ width: 40px; height:auto; }
+    .brand-lockup span{
+      font-weight: 800;
+      letter-spacing: .2px;
+      color: var(--text);
+    }
+    .nav-link{
+      color: rgba(15,23,42,.75) !important;
+      font-weight: 700;
+    }
+    .nav-link:hover{ color: var(--brand) !important; }
+
+    .navbar-toggler{ border-color: rgba(15,23,42,.20); }
+    .navbar-toggler-icon{
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2815, 23, 42, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Page */
+    .page-wrap{ padding: 3.0rem 0 3.5rem; }
+    .panel{
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.90));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+    .title{
+      font-size: clamp(2rem, 2.6vw + 1rem, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -.6px;
+      margin: 0;
+      font-weight: 900;
+      text-align: center;
+    }
+    .subtitle{
+      margin: .85rem auto 0;
+      max-width: 52rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    /* Form */
+    .form-card{
+      margin-top: 1.6rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+    }
+
+    .form-label{
+      font-weight: 900;
+      color: rgba(15,23,42,.78);
+      margin-bottom: .35rem;
+    }
+    .form-control, .form-select{
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .form-control:focus, .form-select:focus{
+      outline: none;
+      box-shadow: 0 0 0 .22rem var(--brand-soft);
+      border-color: rgba(47,191,113,.45);
+    }
+
+    /* Star rating control */
+    .rating-wrap{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: .85rem;
+      border: 1px dashed rgba(15,23,42,.18);
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .stars{
+      display:flex;
+      align-items:center;
+      gap: .25rem;
+      user-select: none;
+    }
+    .star-btn{
+      width: 28px;
+      height: 28px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: rgba(245,158,11,.25);
+      cursor: pointer;
+      transition: transform .08s ease, color .08s ease;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.10));
+    }
+    .star-btn:hover{ transform: translateY(-1px); }
+    .star-btn.filled{ color: #f59e0b; }
+
+    .rating-text{
+      font-weight: 800;
+      color: rgba(15,23,42,.80);
+    }
+    .rating-hint{
+      font-size: .95rem;
+      color: var(--muted);
+      font-weight: 650;
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btn-primary{
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .8rem 1.1rem;
+      box-shadow: 0 10px 18px rgba(47,191,113,.22);
+    }
+    .btn-primary:hover{
+      background: #26aa64;
+      border-color: #26aa64;
+    }
+    .btn-primary:disabled{
+      opacity: .75;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .note{
+      margin-top: 1rem;
+      color: var(--muted);
+      font-weight: 650;
+      text-align: center;
+    }
+
+    /* Validation */
+    .field-error{
+      color: var(--danger);
+      font-weight: 800;
+      font-size: .95rem;
+      margin-top: .4rem;
+      display: none;
+    }
+    .invalid .field-error{ display: block; }
+    .invalid .form-control,
+    .invalid .form-select{
+      border-color: rgba(220,38,38,.55);
+      box-shadow: 0 0 0 .22rem rgba(220,38,38,.10);
+    }
+
+    /* Footer */
+    footer{
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(10px);
+    }
+    footer a{
+      color: var(--brand);
+      font-weight: 900;
+      text-decoration: none;
+    }
+    footer a:hover{ text-decoration: underline; }
+  </style>
 </head>
+
 <body>
-  <section data-bs-version="5.1" class="menu menu2 cid-tJS6tZXiPa" once="menu" id="menu02-0">
-    <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
-      <div class="container">
-        <div class="navbar-brand">
-          <span class="navbar-logo">
-            <a href="index.html">
-              <img src="assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers" style="height: 3rem;">
-            </a>
-          </span>
-          <span class="navbar-caption-wrap"><a class="navbar-caption text-black text-primary display-4" href="index.html">Smoky Mountain Retrievers</a></span>
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
-            <li class="nav-item">
-              <a class="nav-link link text-black text-primary display-4" href="index.html#people04-1i">Testimonials</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link link text-black text-primary display-4" href="index.html#contacts02-9">Contacts</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </section>
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg site-nav sticky-top">
+    <div class="container py-2">
+      <a class="brand-lockup" href="index.html">
+        <img src="assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers logo">
+        <span>Smoky Mountain Retrievers</span>
+      </a>
 
-  <section data-bs-version="5.1" class="form5 cid-review-form" id="review-form">
-    <div class="container">
-      <div class="mbr-section-head mb-5">
-        <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-          <strong>Leave a Review</strong>
-        </h3>
-        <h4 class="mbr-section-subtitle mbr-fonts-style align-center mb-0 mt-4 display-7">Share your experience with Smoky Mountain Retrievers. We read every note and appreciate your feedback.</h4>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navMain">
+        <ul class="navbar-nav align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html#people04-1i">Testimonials</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="index.html#contacts02-9">Contacts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="all-reviews.html">All Reviews</a>
+          </li>
+        </ul>
       </div>
-      <div class="row justify-content-center mt-4">
-        <div class="col-lg-8 mx-auto mbr-form">
-          <form action="/submit-review" method="POST" class="mbr-form form-with-styler">
-            <div class="dragArea row">
-              <div class="col-md col-sm-12 form-group mb-3" data-for="name">
-                <input type="text" name="name" placeholder="Name" data-form-field="name" class="form-control" id="review-name" required>
-              </div>
-              <div class="col-md col-sm-12 form-group mb-3" data-for="email">
-                <input type="email" name="email" placeholder="Email" data-form-field="email" class="form-control" id="review-email" required>
-              </div>
-              <div class="col-12 form-group mb-3" data-for="rating">
-                <select name="rating" data-form-field="rating" class="form-control" id="review-rating" required>
-                  <option value="" disabled selected>Rating (1-5)</option>
-                  <option value="1">1 - Not satisfied</option>
-                  <option value="2">2 - Could be better</option>
-                  <option value="3">3 - Okay</option>
-                  <option value="4">4 - Very good</option>
-                  <option value="5">5 - Excellent</option>
-                </select>
-              </div>
-              <div class="col-12 form-group mb-3" data-for="message">
-                <textarea name="message" placeholder="Write your review" data-form-field="message" class="form-control" id="review-message" rows="6" required></textarea>
-              </div>
-              <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
-                <button type="submit" class="btn btn-primary display-7">Submit Review</button>
-              </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page-wrap">
+    <div class="container">
+      <section class="panel">
+        <h1 class="title">Leave a Review</h1>
+        <p class="subtitle">
+          Share your experience with Smoky Mountain Retrievers. We read every note and appreciate your feedback.
+        </p>
+
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-9 col-xl-8">
+            <div class="form-card">
+              <form id="review-form" action="/submit-review" method="POST" novalidate>
+                <div class="row g-3">
+                  <div class="col-12 col-md-6" id="group-name">
+                    <label class="form-label" for="review-name">Name</label>
+                    <input class="form-control" id="review-name" name="name" type="text" placeholder="Your name" required maxlength="80" />
+                    <div class="field-error">Please enter your name.</div>
+                  </div>
+
+                  <div class="col-12 col-md-6" id="group-email">
+                    <label class="form-label" for="review-email">Email</label>
+                    <input class="form-control" id="review-email" name="email" type="email" placeholder="you@example.com" required maxlength="120" />
+                    <div class="field-error">Please enter a valid email address.</div>
+                  </div>
+
+                  <div class="col-12" id="group-rating">
+                    <label class="form-label" for="review-rating">Rating</label>
+
+                    <!-- Hidden/real value sent to server -->
+                    <input type="hidden" id="review-rating" name="rating" value="" required />
+
+                    <div class="rating-wrap" aria-label="Choose a rating from 1 to 5">
+                      <div>
+                        <div class="stars" id="stars" role="radiogroup" aria-label="Star rating">
+                          <!-- Buttons inserted by JS -->
+                        </div>
+                        <p class="rating-hint mb-0">Click a star to select your rating.</p>
+                      </div>
+
+                      <div class="rating-text" id="rating-text">No rating selected</div>
+                    </div>
+
+                    <div class="field-error">Please select a rating.</div>
+                  </div>
+
+                  <div class="col-12" id="group-message">
+                    <label class="form-label" for="review-message">Your review</label>
+                    <textarea class="form-control" id="review-message" name="message" rows="7" placeholder="Write your review…" required maxlength="2000"></textarea>
+                    <div class="field-error">Please write a short review.</div>
+                  </div>
+
+                  <div class="col-12 d-grid">
+                    <button class="btn btn-primary" id="submit-btn" type="submit">Submit Review</button>
+                  </div>
+                </div>
+              </form>
+
+              <p class="note mb-0">
+                This form is for feedback collection only and does not automatically publish reviews.
+              </p>
             </div>
-          </form>
-          <p class="mbr-text mbr-fonts-style mt-3 display-7">This form is for feedback collection only and does not automatically publish reviews.</p>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
+  </main>
 
-  <section data-bs-version="5.1" class="footer3 cid-tJS6tZXiPb" id="footer3-review">
-    <div class="container">
-      <div class="row align-center mbr-white">
-        <div class="col-12">
-          <p class="mbr-text mb-0 mbr-fonts-style display-7">
-            <a class="text-white" href="index.html#people04-1i">Back to Testimonials</a>
-          </p>
-        </div>
-      </div>
+  <!-- FOOTER -->
+  <footer class="py-4">
+    <div class="container text-center">
+      <a href="index.html#people04-1i">Back to Testimonials</a>
     </div>
-  </section>
+  </footer>
 
   <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/smoothscroll/smooth-scroll.js"></script>
-  <script src="assets/ytplayer/index.js"></script>
-  <script src="assets/dropdown/js/navbar-dropdown.js"></script>
-  <script src="assets/theme/js/script.js"></script>
+
+  <script>
+    const form = document.getElementById("review-form");
+    const submitBtn = document.getElementById("submit-btn");
+
+    const nameEl = document.getElementById("review-name");
+    const emailEl = document.getElementById("review-email");
+    const ratingEl = document.getElementById("review-rating"); // hidden input
+    const messageEl = document.getElementById("review-message");
+
+    const groupName = document.getElementById("group-name");
+    const groupEmail = document.getElementById("group-email");
+    const groupRating = document.getElementById("group-rating");
+    const groupMessage = document.getElementById("group-message");
+
+    const starsWrap = document.getElementById("stars");
+    const ratingText = document.getElementById("rating-text");
+
+    function setGroupValid(group, valid){
+      group.classList.toggle("invalid", !valid);
+    }
+
+    function validEmail(value){
+      // simple practical email check
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function makeStarButton(index){
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "star-btn";
+      btn.setAttribute("aria-label", `${index} star${index === 1 ? "" : "s"}`);
+      btn.dataset.value = String(index);
+
+      // SVG star
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+          <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+        </svg>
+      `;
+
+      btn.addEventListener("click", () => {
+        setRating(index);
+      });
+
+      btn.addEventListener("keydown", (e) => {
+        // keyboard support
+        if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+          e.preventDefault();
+          setRating(Math.max(1, (Number(ratingEl.value) || 1) - 1));
+        }
+        if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+          e.preventDefault();
+          setRating(Math.min(5, (Number(ratingEl.value) || 0) + 1));
+        }
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setRating(index);
+        }
+      });
+
+      return btn;
+    }
+
+    function setRating(value){
+      ratingEl.value = String(value);
+
+      const buttons = starsWrap.querySelectorAll(".star-btn");
+      buttons.forEach((b, i) => {
+        b.classList.toggle("filled", i < value);
+        b.setAttribute("aria-checked", i + 1 === value ? "true" : "false");
+        b.setAttribute("role", "radio");
+        b.tabIndex = (i + 1 === value) ? 0 : -1;
+      });
+
+      const labels = ["Not satisfied", "Could be better", "Okay", "Very good", "Excellent"];
+      ratingText.textContent = `${value}/5 — ${labels[value - 1]}`;
+      setGroupValid(groupRating, true);
+    }
+
+    // Build stars
+    for (let i = 1; i <= 5; i++){
+      starsWrap.appendChild(makeStarButton(i));
+    }
+
+    function validate(){
+      const nameOk = nameEl.value.trim().length > 0;
+      const emailOk = validEmail(emailEl.value.trim());
+      const ratingOk = Number(ratingEl.value) >= 1 && Number(ratingEl.value) <= 5;
+      const messageOk = messageEl.value.trim().length > 0;
+
+      setGroupValid(groupName, nameOk);
+      setGroupValid(groupEmail, emailOk);
+      setGroupValid(groupRating, ratingOk);
+      setGroupValid(groupMessage, messageOk);
+
+      return nameOk && emailOk && ratingOk && messageOk;
+    }
+
+    // Live validation (lightweight)
+    nameEl.addEventListener("input", () => setGroupValid(groupName, nameEl.value.trim().length > 0));
+    emailEl.addEventListener("input", () => setGroupValid(groupEmail, validEmail(emailEl.value.trim())));
+    messageEl.addEventListener("input", () => setGroupValid(groupMessage, messageEl.value.trim().length > 0));
+
+    form.addEventListener("submit", async (e) => {
+      if (!validate()){
+        e.preventDefault();
+        return;
+      }
+
+      // Optional: submit via fetch for smoother UX.
+      // If you'd rather rely on normal HTML form submission, delete everything below this line.
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Submitting…";
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch(form.action, { method: "POST", body: formData });
+
+        if (!res.ok) throw new Error("Submit failed");
+
+        // Simple success state
+        form.reset();
+        ratingEl.value = "";
+        ratingText.textContent = "Thanks! Your review was submitted.";
+        starsWrap.querySelectorAll(".star-btn").forEach((b) => b.classList.remove("filled"));
+      } catch (err) {
+        ratingText.textContent = "Sorry—something went wrong. Please try again.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
 </body>
 </html>
+
+

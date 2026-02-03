@@ -7,45 +7,49 @@
   <meta name="description" content="Browse every story from our Smoky Mountain Retrievers families." />
 
   <link rel="icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
-
-  <!-- Bootstrap 5 (you already ship this locally, so keep local) -->
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
 
-  <!-- Optional: If you want Inter Tight like Mobirise -->
+  <!-- Matches your Mobirise font choice -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg: #0b1220;
-      --card: rgba(255,255,255,.08);
-      --card-border: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --brand: #7dd3fc;         /* light blue accent */
-      --brand-2: #a78bfa;       /* purple accent */
-      --star: #fbbf24;          /* amber */
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      /* Light theme */
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;          /* very light green tint */
+      --surface: #ffffff;          /* cards */
+      --surface-2: #f7faf8;        /* subtle alt surface */
+      --border: rgba(17, 24, 39, .10);
+      --text: #0f172a;             /* slate-900 */
+      --muted: rgba(15, 23, 42, .70);
+
+      /* Green accents similar vibe to your Mobirise page */
+      --brand: #2fbf71;            /* primary green */
+      --brand-2: #a7f3d0;          /* light mint */
+      --brand-soft: rgba(47, 191, 113, .12);
+
+      --star: #f59e0b;             /* amber (gold) */
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
       --radius: 18px;
     }
 
     body{
       font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(125, 211, 252,.24), transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(167, 139, 250,.22), transparent 60%),
-        radial-gradient(900px 700px at 50% 100%, rgba(34, 211, 238,.10), transparent 60%),
-        var(--bg);
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
       color: var(--text);
       min-height: 100vh;
     }
 
     /* Navbar */
     .site-nav{
-      backdrop-filter: blur(12px);
-      background: rgba(11,18,32,.55);
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
     }
     .brand-lockup{
       display:flex; align-items:center; gap:.75rem;
@@ -57,19 +61,20 @@
       letter-spacing: .2px;
       color: var(--text);
     }
-    .nav-link{
-      color: var(--muted) !important;
-      font-weight: 600;
-    }
-    .nav-link:hover{ color: var(--text) !important; }
 
-    /* Page header */
+    .nav-link{
+      color: rgba(15,23,42,.75) !important;
+      font-weight: 700;
+    }
+    .nav-link:hover{ color: var(--brand) !important; }
+
+    /* Hero */
     .page-hero{
-      padding: 3.2rem 0 1.6rem;
+      padding: 3.0rem 0 1.4rem;
     }
     .hero-card{
-      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.85));
+      border: 1px solid var(--border);
       border-radius: calc(var(--radius) + 6px);
       box-shadow: var(--shadow);
       padding: 2rem;
@@ -103,24 +108,24 @@
       flex: 1 1 240px;
     }
     .form-label{
-      color: var(--muted);
-      font-weight: 700;
+      color: rgba(15,23,42,.70);
+      font-weight: 800;
       margin-bottom: .35rem;
     }
     .form-select, .form-control{
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
       color: var(--text);
       border-radius: 14px;
       padding: .65rem .85rem;
     }
     .form-select:focus, .form-control:focus{
       outline: none;
-      box-shadow: 0 0 0 .2rem rgba(125,211,252,.15);
-      border-color: rgba(125,211,252,.35);
+      box-shadow: 0 0 0 .22rem var(--brand-soft);
+      border-color: rgba(47,191,113,.45);
     }
 
-    /* Grid of cards */
+    /* Reviews grid */
     .reviews-wrap{
       padding: 1rem 0 3.5rem;
     }
@@ -132,24 +137,26 @@
     }
     .review-card{
       grid-column: span 4;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.2rem 1.2rem 1.1rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,.25);
-      transition: transform .15s ease, border-color .15s ease;
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
       height: 100%;
     }
     .review-card:hover{
       transform: translateY(-2px);
-      border-color: rgba(125,211,252,.22);
+      border-color: rgba(47,191,113,.35);
+      box-shadow: 0 14px 26px rgba(15,23,42,.10);
     }
+
     .review-message{
       color: var(--text);
       font-size: 1.02rem;
       line-height: 1.5;
       margin: 0 0 .9rem;
-      white-space: pre-wrap; /* preserve user line breaks */
+      white-space: pre-wrap;
     }
 
     .review-meta{
@@ -158,16 +165,18 @@
       justify-content: space-between;
       gap: .75rem;
       margin-top: .4rem;
+      padding-top: .65rem;
+      border-top: 1px dashed rgba(15,23,42,.12);
     }
     .review-name{
       margin: 0;
-      color: var(--muted);
-      font-weight: 800;
+      color: rgba(15,23,42,.75);
+      font-weight: 900;
       letter-spacing: .2px;
       font-size: .98rem;
     }
 
-    /* Stars: SVG so they never “go invisible” due to missing glyphs */
+    /* Stars (SVG) */
     .stars{
       display:flex;
       align-items:center;
@@ -178,8 +187,8 @@
       width: 18px;
       height: 18px;
       display:block;
-      color: rgba(251,191,36,.28); /* empty star */
-      filter: drop-shadow(0 1px 1px rgba(0,0,0,.35));
+      color: rgba(245,158,11,.25); /* empty */
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.10));
     }
     .star.filled{
       color: var(--star);
@@ -187,9 +196,9 @@
 
     .status{
       margin-top: 1.5rem;
-      color: var(--muted);
+      color: rgba(15,23,42,.70);
       text-align:center;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     /* Responsive */
@@ -203,12 +212,22 @@
 
     /* Footer */
     footer{
-      border-top: 1px solid rgba(255,255,255,.08);
-      background: rgba(11,18,32,.55);
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.85);
       backdrop-filter: blur(10px);
     }
-    footer a{ color: var(--text); font-weight: 700; text-decoration: none; }
+    footer a{
+      color: var(--brand);
+      font-weight: 900;
+      text-decoration: none;
+    }
     footer a:hover{ text-decoration: underline; }
+
+    /* Optional: make the toggler icon visible on light background */
+    .navbar-toggler{ border-color: rgba(15,23,42,.20); }
+    .navbar-toggler-icon{
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2815, 23, 42, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
   </style>
 </head>
 
@@ -221,8 +240,8 @@
         <span>Smoky Mountain Retrievers</span>
       </a>
 
-      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse justify-content-end" id="navMain">
@@ -345,7 +364,7 @@
 
     function renderStars(rating) {
       const r = clampRating(rating);
-      const filledCount = Math.round(r); // visually consistent; change to Math.floor if you prefer
+      const filledCount = Math.round(r); // change to Math.floor if you prefer
       const wrap = document.createElement("div");
       wrap.className = "stars";
       wrap.setAttribute("role", "img");
@@ -430,7 +449,6 @@
 
     sortEl?.addEventListener("change", updateView);
     searchEl?.addEventListener("input", () => {
-      // tiny debounce to avoid re-rendering on every keystroke burst
       window.clearTimeout(searchEl._t);
       searchEl._t = window.setTimeout(updateView, 80);
     });

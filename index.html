@@ -404,7 +404,6 @@
       <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
 
       <div class="gallery-grid" id="gallery-grid">
-        <!-- Replace images/paths as needed -->
         <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png">
           <img src="assets/images/bear-511x582.png" alt="Gallery image 1">
         </div>
@@ -462,8 +461,9 @@
       <div class="row justify-content-center mt-4">
         <div class="col-12 col-lg-8">
           <div class="card-lite p-4">
-            <!-- Replace this form action with your actual handler if you have one -->
-            <form action="/contact" method="POST" id="contact-form">
+            <!-- IMPORTANT: Change this action to your own backend handler.
+                 Example: action="/contact" if you set up an nginx+backend endpoint. -->
+            <form id="contact-form" action="/contact" method="POST">
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label" for="contact-name">Name</label>
@@ -509,8 +509,7 @@
         </div>
 
         <div class="card-lite map-card">
-          <!-- PRIVACY-SAFE: no street number -->
-          <!-- If you prefer to remove the API key from the public HTML entirely, tell me and I’ll switch to the “pb” embed format. -->
+          <!-- Keyless map embed (no API key exposed) -->
           <iframe
             class="map-embed"
             loading="lazy"
@@ -661,6 +660,28 @@
     }
 
     loadTestimonials();
+  </script>
+
+  <!-- CONTACT FORM AJAX SUBMIT (your snippet, implemented) -->
+  <script>
+    document.getElementById("contact-form")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button[type="submit"]');
+      const original = btn.textContent;
+      btn.disabled = true; btn.textContent = "Sending…";
+
+      try {
+        const res = await fetch(form.action, { method: "POST", body: new FormData(form) });
+        if (!res.ok) throw new Error("failed");
+        btn.textContent = "Sent! ✅";
+        form.reset();
+      } catch {
+        btn.textContent = "Failed — try again";
+      } finally {
+        setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 2500);
+      }
+    });
   </script>
 </body>
 </html>

@@ -57,10 +57,11 @@
     }
 
     .review-stars {
-      color: #f4b400;
+      color: #f4b400 !important;
       letter-spacing: 0.08em;
       margin-top: 0.5rem;
       margin-bottom: 0.5rem;
+      font-weight: 600;
     }
 
     @media (max-width: 991px) {
@@ -171,10 +172,21 @@
       return [];
     };
 
+    const parseRating = (value) => {
+      if (typeof value === "number" && !Number.isNaN(value)) {
+        return value;
+      }
+      if (typeof value === "string") {
+        const match = value.match(/[\d.]+/);
+        return match ? Number(match[0]) : 0;
+      }
+      return 0;
+    };
+
     const sortReviews = (reviews, direction) => {
       return [...reviews].sort((a, b) => {
-        const ratingA = Number(a.rating) || 0;
-        const ratingB = Number(b.rating) || 0;
+        const ratingA = parseRating(a.rating);
+        const ratingB = parseRating(b.rating);
         return direction === "low" ? ratingA - ratingB : ratingB - ratingA;
       });
     };
@@ -193,7 +205,7 @@
       reviews.forEach((review) => {
         const name = review.name || "Happy Customer";
         const message = review.message || "";
-        const ratingValue = Number(review.rating) || 0;
+        const ratingValue = parseRating(review.rating);
         const clampedRating = Math.min(Math.max(ratingValue, 0), 5);
         const stars = "★★★★★".slice(0, clampedRating).padEnd(5, "☆");
 

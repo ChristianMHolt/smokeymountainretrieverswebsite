@@ -28,18 +28,34 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 1rem;
       text-align: center;
+      flex-direction: column;
     }
 
     .testimonials-header .mbr-section-title,
     .testimonials-header .mbr-text {
-      text-align: left;
+      text-align: center;
     }
 
     .testimonials-header-actions {
-      margin-left: auto;
+      margin-left: 0;
+    }
+
+    #people04-1i .mbr-masonry {
+      margin-bottom: 2.5rem;
+    }
+
+    #people04-1i {
+      padding-bottom: 4rem;
+    }
+
+    .review-stars {
+      color: #f4b400;
+      letter-spacing: 0.08em;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     @media (max-width: 991px) {
@@ -429,7 +445,7 @@
           <div class="item-wrapper">
             <div class="card-box align-left">
               <p class="card-text mbr-fonts-style display-7">${message}</p>
-              <div class="mbr-text mbr-fonts-style display-7" aria-label="${clampedRating} out of 5 stars">
+              <div class="mbr-text mbr-fonts-style display-7 review-stars" aria-label="${clampedRating} out of 5 stars">
                 <span aria-hidden="true">${stars}</span>
               </div>
               <h5 class="card-title mbr-fonts-style display-7">${name}</h5>

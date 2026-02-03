@@ -23,6 +23,40 @@
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=b85cvj"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=b85cvj" type="text/css">
+  <style>
+    .testimonials-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .testimonials-header .mbr-section-title,
+    .testimonials-header .mbr-text {
+      text-align: left;
+    }
+
+    .testimonials-header-actions {
+      margin-left: auto;
+    }
+
+    @media (max-width: 991px) {
+      .testimonials-header {
+        justify-content: center;
+      }
+
+      .testimonials-header .mbr-section-title,
+      .testimonials-header .mbr-text {
+        text-align: center;
+      }
+
+      .testimonials-header-actions {
+        margin-left: 0;
+      }
+    }
+  </style>
 
   
   
@@ -203,13 +237,18 @@
 	
 	<div class="container">
 		<div class="row mb-5 justify-content-center">
-			<div class="col-12 mb-0 content-head">
-				<h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-					<strong>Testimonials</strong>
-				</h3>
-				<p class="mbr-text mbr-fonts-style align-center mt-4 display-7">Have a story to share? We’d love to hear from you.</p>
-				<div class="align-center mt-3">
-					<a class="btn btn-primary display-7" href="review.html">Leave a Review</a>
+			<div class="col-12 mb-0 content-head testimonials-header">
+				<div>
+					<h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+						<strong>Testimonials</strong>
+					</h3>
+					<p class="mbr-text mbr-fonts-style align-center mt-4 display-7">Have a story to share? We’d love to hear from you.</p>
+					<div class="align-center mt-3">
+						<a class="btn btn-primary display-7" href="review.html">Leave a Review</a>
+					</div>
+				</div>
+				<div class="testimonials-header-actions">
+					<a class="btn btn-primary btn-sm display-7" href="reviews.html">See all reviews</a>
 				</div>
 			</div>
 		</div>
@@ -366,8 +405,9 @@
     };
 
     const renderReviews = (reviews) => {
+      const previewReviews = reviews.slice(0, 6);
       testimonialsList.innerHTML = "";
-      if (!reviews.length) {
+      if (!previewReviews.length) {
         testimonialsList.innerHTML = `
           <div class="col-12">
             <p class="mbr-text mbr-fonts-style align-center display-7">No reviews yet. Be the first to share your story!</p>
@@ -376,7 +416,7 @@
         return;
       }
 
-      reviews.forEach((review) => {
+      previewReviews.forEach((review) => {
         const name = review.name || "Happy Customer";
         const message = review.message || "";
         const ratingValue = Number(review.rating) || 0;

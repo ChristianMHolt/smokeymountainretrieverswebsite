@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Login | Smoky Mountain Retrievers</title>
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+  <style>
+    body{ background:#f7faf8; }
+    .card{ border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="card p-4">
+          <h1 class="h4 mb-3">Admin login</h1>
+
+          <div id="alert" class="alert alert-danger d-none" role="alert"></div>
+
+          <form id="login-form">
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input class="form-control" type="password" name="password" required autofocus />
+            </div>
+            <button class="btn btn-success w-100" type="submit" id="btn">Sign in</button>
+          </form>
+
+          <p class="text-muted mt-3 mb-0" style="font-weight:600;">
+            Tip: You can also restrict <code>/admin</code> in nginx (IP allowlist or Basic Auth).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+  <script>
+    const form = document.getElementById("login-form");
+    const alertBox = document.getElementById("alert");
+    const btn = document.getElementById("btn");
+
+    function showError(msg){
+      alertBox.textContent = msg;
+      alertBox.classList.remove("d-none");
+    }
+    function clearError(){
+      alertBox.textContent = "";
+      alertBox.classList.add("d-none");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearError();
+
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = "Signing in…";
+
+      try {
+        const fd = new FormData(form);
+        const res = await fetch("/api/admin/login", {
+          method: "POST",
+          body: fd,
+          credentials: "include",
+          headers: { "X-Requested-With": "smr-admin" }
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (data.error === "bad_password") throw new Error("Incorrect password.");
+          throw new Error("Login failed.");
+        }
+
+        window.location.href = "/admin/codes.html";
+      } catch (err) {
+        showError(err.message || "Login failed.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    });
+  </script>
+</body>
+</html>

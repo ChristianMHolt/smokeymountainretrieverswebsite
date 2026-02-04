@@ -1,0 +1,313 @@
+import os
+import re
+import sqlite3
+from flask import Flask, request, jsonify
+
+DB_PATH = os.environ.get("REVIEWS_DB", os.path.join(os.path.dirname(__file__), "reviews.db"))
+
+app = Flask(__name__)
+
+CODE_RE = re.compile(r"^\d{3}$")
+
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    # Safer concurrency behavior for SQLite
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA busy_timeout=5000;")  # wait up to 5s if locked
+    conn.execute("PRAGMA foreign_keys=ON;")
+    return conn
+
+
+def ensure_schema(conn: sqlite3.Connection):
+    """
+    Create the one-time review code table if it doesn't exist.
+    Safe to run on every request.
+    """
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS review_codes (
+          code TEXT PRIMARY KEY,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          used_at TEXT,
+          used_by_email TEXT,
+          used_by_name TEXT
+        );
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_review_codes_used_at ON review_codes(used_at);")
+
+
+def parse_incoming_review():
+    """
+    Accept either JSON or form-encoded POSTs.
+    Returns: name, email, rating, message, code
+    """
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+        name = (data.get("name") or "").strip()
+        email = (data.get("email") or "").strip()
+        rating = data.get("rating")
+        message = (data.get("message") or "").strip()
+        code = (data.get("code") or "").strip()
+    else:
+        name = (request.form.get("name") or "").strip()
+        email = (request.form.get("email") or "").strip()
+        rating = request.form.get("rating")
+        message = (request.form.get("message") or "").strip()
+        code = (request.form.get("code") or "").strip()
+
+    return name, email, rating, message, code
+
+
+def table_columns(conn: sqlite3.Connection, table: str):
+    rows = conn.execute(f"PRAGMA table_info({table});").fetchall()
+    return [r["name"] for r in rows]
+
+
+def has_table(conn: sqlite3.Connection, table: str) -> bool:
+    row = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name=?;",
+        (table,),
+    ).fetchone()
+    return row is not None
+
+
+@app.get("/health")
+def health():
+    # Ensure schema here too, so the first hit after boot creates table without needing Flask hooks.
+    conn = get_db()
+    try:
+        ensure_schema(conn)
+        conn.commit()
+    finally:
+        conn.close()
+    return jsonify({"ok": True})
+
+
+@app.post("/submit-review")
+def submit_review():
+    name, email, rating, message, code = parse_incoming_review()
+
+    # Basic validation
+    if not name or not message or rating is None:
+        return jsonify({"ok": False, "error": "name, rating, and message are required"}), 400
+
+    # Verification code validation (server-side)
+    if not CODE_RE.fullmatch(code or ""):
+        return jsonify({"ok": False, "error": "invalid_code"}), 403
+
+    try:
+        rating_int = int(rating)
+    except Exception:
+        return jsonify({"ok": False, "error": "rating must be an integer"}), 400
+
+    if rating_int < 1 or rating_int > 5:
+        return jsonify({"ok": False, "error": "rating must be between 1 and 5"}), 400
+
+    conn = get_db()
+    try:
+        ensure_schema(conn)
+
+        # Sanity: reviews table must exist
+        if not has_table(conn, "reviews"):
+            return jsonify({"ok": False, "error": "missing_reviews_table"}), 500
+
+        # Acquire a write lock immediately so two submits can't redeem the same code.
+        conn.execute("BEGIN IMMEDIATE;")
+
+        # Try to claim the code. This succeeds only if code exists AND unused.
+        cur = conn.execute(
+            """
+            UPDATE review_codes
+               SET used_at = datetime('now'),
+                   used_by_email = ?,
+                   used_by_name  = ?
+             WHERE code = ?
+               AND used_at IS NULL
+            """,
+            (email or None, name, code),
+        )
+
+        if cur.rowcount != 1:
+            conn.execute("ROLLBACK;")
+            return jsonify({"ok": False, "error": "invalid_code"}), 403
+
+        # Insert the review (adapt to your schema dynamically)
+        cols = table_columns(conn, "reviews")
+
+        # Common schema variants:
+        # (name, email, rating, message)
+        # (name, rating, message)
+        # may or may not have created_at
+        insert_cols = []
+        values = []
+
+        def add(col, val):
+            insert_cols.append(col)
+            values.append(val)
+
+        if "name" in cols:
+            add("name", name)
+        if "email" in cols:
+            add("email", email or None)
+        if "rating" in cols:
+            add("rating", rating_int)
+        if "message" in cols:
+            add("message", message)
+        if "created_at" in cols:
+            # store ISO-ish
+            add("created_at", sqlite3.Connection("").execute("SELECT datetime('now')").fetchone()[0] if False else None)
+
+        # The created_at trick above is ugly; do it properly:
+        if "created_at" in cols:
+            # Replace the placeholder None we added
+            values[-1] = conn.execute("SELECT datetime('now')").fetchone()[0]
+
+        if not insert_cols:
+            conn.execute("ROLLBACK;")
+            return jsonify({"ok": False, "error": "reviews_table_has_no_known_columns"}), 500
+
+        placeholders = ", ".join(["?"] * len(insert_cols))
+        sql = f"INSERT INTO reviews ({', '.join(insert_cols)}) VALUES ({placeholders})"
+        conn.execute(sql, tuple(values))
+
+        conn.commit()
+        return jsonify({"ok": True})
+
+    except sqlite3.OperationalError as e:
+        try:
+            conn.execute("ROLLBACK;")
+        except Exception:
+            pass
+        return jsonify({"ok": False, "error": "db_busy", "detail": str(e)}), 503
+    except Exception as e:
+        try:
+            conn.execute("ROLLBACK;")
+        except Exception:
+            pass
+        return jsonify({"ok": False, "error": "server_error", "detail": str(e)}), 500
+    finally:
+        conn.close()
+
+
+@app.get("/reviews")
+def list_reviews():
+    """
+    Returns latest reviews. Works across a few schema variants so the UI doesn't appear "empty"
+    just because columns differ.
+    """
+    limit = 50
+    conn = get_db()
+    try:
+        if not has_table(conn, "reviews"):
+            return jsonify({"reviews": []})
+
+        cols = table_columns(conn, "reviews")
+
+        select_cols = []
+        if "name" in cols: select_cols.append("name")
+        if "rating" in cols: select_cols.append("rating")
+        if "message" in cols: select_cols.append("message")
+        if "created_at" in cols: select_cols.append("created_at")
+
+        # Fallback: if created_at is missing, still return the basics
+        if not select_cols:
+            return jsonify({"reviews": []})
+
+        # ORDER BY preference: id DESC if exists, else created_at DESC if exists
+        order_clause = ""
+        if "id" in cols:
+            order_clause = "ORDER BY id DESC"
+        elif "created_at" in cols:
+            order_clause = "ORDER BY created_at DESC"
+
+        sql = f"SELECT {', '.join(select_cols)} FROM reviews {order_clause} LIMIT ?"
+        rows = conn.execute(sql, (limit,)).fetchall()
+
+        reviews = []
+        for r in rows:
+            reviews.append({
+                "name": r["name"] if "name" in r.keys() else "Happy Customer",
+                "rating": r["rating"] if "rating" in r.keys() else 0,
+                "message": r["message"] if "message" in r.keys() else "",
+                "created_at": r["created_at"] if "created_at" in r.keys() else None,
+            })
+
+        return jsonify({"reviews": reviews})
+    finally:
+        conn.close()
+
+
+# OPTIONAL admin endpoints
+ADMIN_TOKEN = os.environ.get("REVIEW_ADMIN_TOKEN")  # set this if you enable the endpoint
+
+
+@app.post("/admin/add-codes")
+def admin_add_codes():
+    if not ADMIN_TOKEN:
+        return jsonify({"ok": False, "error": "admin_disabled"}), 404
+
+    auth = (request.headers.get("Authorization") or "").strip()
+    if auth != f"Bearer {ADMIN_TOKEN}":
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    codes = data.get("codes") or []
+    if not isinstance(codes, list) or not codes:
+        return jsonify({"ok": False, "error": "codes must be a non-empty list"}), 400
+
+    cleaned = []
+    for c in codes:
+        c = str(c).strip()
+        if not CODE_RE.fullmatch(c):
+            return jsonify({"ok": False, "error": f"invalid_code_format: {c}"}), 400
+        cleaned.append((c,))
+
+    conn = get_db()
+    try:
+        ensure_schema(conn)
+        conn.executemany("INSERT OR IGNORE INTO review_codes(code) VALUES (?)", cleaned)
+        conn.commit()
+    finally:
+        conn.close()
+
+    return jsonify({"ok": True, "inserted_or_existing": len(cleaned)})
+
+
+@app.get("/admin/codes-status")
+def admin_codes_status():
+    if not ADMIN_TOKEN:
+        return jsonify({"ok": False, "error": "admin_disabled"}), 404
+
+    auth = (request.headers.get("Authorization") or "").strip()
+    if auth != f"Bearer {ADMIN_TOKEN}":
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    conn = get_db()
+    try:
+        ensure_schema(conn)
+        unused = conn.execute("SELECT COUNT(*) AS n FROM review_codes WHERE used_at IS NULL").fetchone()["n"]
+        used = conn.execute("SELECT COUNT(*) AS n FROM review_codes WHERE used_at IS NOT NULL").fetchone()["n"]
+        return jsonify({"ok": True, "unused": unused, "used": used})
+    finally:
+        conn.close()
+
+
+# DEBUG endpoint to confirm DB + schema quickly (remove later if you want)
+@app.get("/debug/db")
+def debug_db():
+    conn = get_db()
+    try:
+        tables = [r["name"] for r in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+        ).fetchall()]
+        info = {"db_path": DB_PATH, "tables": {}}
+        for t in tables:
+            info["tables"][t] = table_columns(conn, t)
+        return jsonify(info)
+    finally:
+        conn.close()
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)

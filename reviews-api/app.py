@@ -3,7 +3,6 @@ import re
 import hmac
 import sqlite3
 import secrets
-from pathlib import Path
 from functools import wraps
 from flask import Flask, request, jsonify, session
 
@@ -11,10 +10,6 @@ from flask import Flask, request, jsonify, session
 # Helpers: systemd credentials
 # -----------------------------
 def read_credential(name: str) -> str:
-    """
-    Reads a systemd credential from $CREDENTIALS_DIRECTORY/<name>.
-    Returns "" if not present.
-    """
     cred_dir = os.environ.get("CREDENTIALS_DIRECTORY")
     if not cred_dir:
         return ""
@@ -27,11 +22,7 @@ def read_credential(name: str) -> str:
     except Exception:
         return ""
 
-
 def get_secret(env_name: str, cred_name: str) -> str:
-    """
-    Prefer systemd credential; fallback to environment.
-    """
     v = read_credential(cred_name)
     if v:
         return v
@@ -40,20 +31,20 @@ def get_secret(env_name: str, cred_name: str) -> str:
 # -----------------------------
 # Config
 # -----------------------------
-DB_PATH = os.environ.get("REVIEWS_DB", os.path.join(os.path.dirname(__file__), "reviews.db"))
+APP_DIR = os.path.dirname(__file__)
+DB_PATH = os.environ.get("REVIEWS_DB", os.path.join(APP_DIR, "reviews.db"))
 
-# Prefer systemd credentials over env vars
 ADMIN_PASSWORD = get_secret("ADMIN_PASSWORD", "admin_password")
 SECRET_KEY = get_secret("FLASK_SECRET_KEY", "flask_secret_key")
 
 SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "1") == "1"
 
-# Gallery uploads
+# Where images are stored on disk (served by nginx alias /assets/gallery/)
 GALLERY_DIR = os.environ.get("GALLERY_DIR", "/var/lib/reviews-api/gallery")
-ALLOWED_IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
-MAX_IMAGE_BYTES = int(os.environ.get("MAX_IMAGE_BYTES", str(15 * 1024 * 1024)))  # 15MB
 
 CODE_RE = re.compile(r"^\d{3}$")
+
+ALLOWED_IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY or "dev-change-me"
@@ -74,9 +65,8 @@ def get_db():
     conn.execute("PRAGMA foreign_keys=ON;")
     return conn
 
-
 def ensure_schema(conn: sqlite3.Connection):
-    # Review code table
+    # existing codes table
     conn.execute("""
         CREATE TABLE IF NOT EXISTS review_codes (
           code TEXT PRIMARY KEY,
@@ -88,7 +78,7 @@ def ensure_schema(conn: sqlite3.Connection):
     """)
     conn.execute("CREATE INDEX IF NOT EXISTS idx_review_codes_used_at ON review_codes(used_at);")
 
-    # Gallery table
+    # NEW: gallery table
     conn.execute("""
         CREATE TABLE IF NOT EXISTS gallery_images (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -101,7 +91,6 @@ def ensure_schema(conn: sqlite3.Connection):
     conn.execute("CREATE INDEX IF NOT EXISTS idx_gallery_images_category ON gallery_images(category);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_gallery_images_created_at ON gallery_images(created_at);")
 
-
 def has_table(conn: sqlite3.Connection, table: str) -> bool:
     row = conn.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name=?;",
@@ -109,11 +98,9 @@ def has_table(conn: sqlite3.Connection, table: str) -> bool:
     ).fetchone()
     return row is not None
 
-
 def table_columns(conn: sqlite3.Connection, table: str):
     rows = conn.execute(f"PRAGMA table_info({table});").fetchall()
     return [r["name"] for r in rows]
-
 
 def now_sqlite(conn: sqlite3.Connection) -> str:
     return conn.execute("SELECT datetime('now');").fetchone()[0]
@@ -149,15 +136,8 @@ def admin_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
-
 def require_ajax_header():
-    """
-    Light CSRF mitigation:
-    Admin pages call with X-Requested-With: smr-admin
-    Cross-site forms won't set this header.
-    """
     return request.headers.get("X-Requested-With") == "smr-admin"
-
 
 def admin_write_required(fn):
     @wraps(fn)
@@ -172,27 +152,21 @@ def admin_write_required(fn):
 # -----------------------------
 # Gallery helpers
 # -----------------------------
-def safe_category(s: str) -> str:
-    s = (s or "").strip()
-    s = re.sub(r"\s+", " ", s)
-    return s[:80]
+def gallery_url_for(filename: str) -> str:
+    # IMPORTANT: leading slash so it's always absolute from any page
+    return f"/assets/gallery/{filename}"
 
+def ensure_gallery_dir():
+    os.makedirs(GALLERY_DIR, exist_ok=True)
 
-def safe_alt(s: str) -> str:
-    s = (s or "").strip()
-    s = re.sub(r"\s+", " ", s)
-    return s[:120]
+def safe_ext(filename: str) -> str:
+    _, ext = os.path.splitext(filename or "")
+    return ext.lower()
 
-
-def is_allowed_filename(name: str) -> bool:
-    ext = Path(name).suffix.lower()
-    return ext in ALLOWED_IMAGE_EXTS
-
-
-def make_stored_filename(original: str) -> str:
-    ext = Path(original).suffix.lower()
-    token = secrets.token_urlsafe(10)
-    return f"{token}{ext}"
+def new_image_filename(ext: str) -> str:
+    # token_urlsafe can include '-', '_' only; good for filenames
+    token = secrets.token_urlsafe(16)
+    return token + ext
 
 # -----------------------------
 # Public endpoints
@@ -206,7 +180,6 @@ def health():
     finally:
         conn.close()
     return jsonify({"ok": True})
-
 
 @app.post("/submit-review")
 def submit_review():
@@ -232,7 +205,6 @@ def submit_review():
         if not has_table(conn, "reviews"):
             return jsonify({"ok": False, "error": "missing_reviews_table"}), 500
 
-        # Atomic redeem + insert
         conn.execute("BEGIN IMMEDIATE;")
 
         cur = conn.execute(
@@ -295,7 +267,6 @@ def submit_review():
     finally:
         conn.close()
 
-
 @app.get("/reviews")
 def list_reviews():
     limit = 50
@@ -331,18 +302,14 @@ def list_reviews():
     finally:
         conn.close()
 
-
+# -----------------------------
+# Public gallery data endpoint
+# -----------------------------
 @app.get("/gallery-data")
 def gallery_data():
-    """
-    Public endpoint used by gallery.html to render categorized sections.
-    Returns:
-      { ok:true, groups:[ {category:"...", images:[{id,url,alt,created_at}, ...]}, ... ] }
-    """
     conn = get_db()
     try:
-        if not has_table(conn, "gallery_images"):
-            return jsonify({"ok": True, "groups": []})
+        ensure_schema(conn)
 
         rows = conn.execute(
             """
@@ -352,18 +319,23 @@ def gallery_data():
             """
         ).fetchall()
 
-        groups = {}
+        # Group by category
+        groups_map = {}
         for r in rows:
-            cat = r["category"] or "Uncategorized"
-            groups.setdefault(cat, []).append({
+            cat = (r["category"] or "").strip() or "Uncategorized"
+            groups_map.setdefault(cat, []).append({
                 "id": r["id"],
-                "url": f"/assets/gallery/{r['filename']}",
+                "filename": r["filename"],
+                "category": cat,
                 "alt": r["alt"] or "",
                 "created_at": r["created_at"],
+                "url": gallery_url_for(r["filename"]),  # <-- absolute path
             })
 
-        out = [{"category": k, "images": v} for k, v in groups.items()]
-        return jsonify({"ok": True, "groups": out})
+        # Keep stable ordering
+        groups = [{"category": k, "images": groups_map[k]} for k in groups_map.keys()]
+
+        return jsonify({"ok": True, "groups": groups})
     finally:
         conn.close()
 
@@ -373,7 +345,6 @@ def gallery_data():
 @app.get("/api/admin/me")
 def admin_me():
     return jsonify({"ok": True, "is_admin": bool(session.get("is_admin"))})
-
 
 @app.post("/api/admin/login")
 def api_admin_login():
@@ -392,14 +363,12 @@ def api_admin_login():
     session["is_admin"] = True
     return jsonify({"ok": True})
 
-
 @app.post("/api/admin/logout")
 @admin_write_required
 def api_admin_logout():
     session.clear()
     return jsonify({"ok": True})
 
-# ---- Codes ----
 @app.get("/api/admin/codes")
 @admin_required
 def api_admin_codes():
@@ -450,7 +419,6 @@ def api_admin_codes():
     finally:
         conn.close()
 
-
 @app.post("/api/admin/codes/add")
 @admin_write_required
 def api_admin_add_codes():
@@ -480,7 +448,6 @@ def api_admin_add_codes():
     finally:
         conn.close()
 
-
 @app.post("/api/admin/codes/delete")
 @admin_write_required
 def api_admin_delete_code():
@@ -502,7 +469,6 @@ def api_admin_delete_code():
     finally:
         conn.close()
 
-
 @app.get("/api/admin/codes/unused.csv")
 @admin_required
 def api_admin_unused_csv():
@@ -522,7 +488,9 @@ def api_admin_unused_csv():
         headers={"Content-Disposition": "attachment; filename=unused_review_codes.csv"},
     )
 
-# ---- Reviews moderation ----
+# -----------------------------
+# Admin Reviews API
+# -----------------------------
 @app.get("/api/admin/reviews")
 @admin_required
 def api_admin_reviews():
@@ -571,7 +539,6 @@ def api_admin_reviews():
     finally:
         conn.close()
 
-
 @app.post("/api/admin/reviews/delete")
 @admin_write_required
 def api_admin_delete_review():
@@ -604,82 +571,69 @@ def api_admin_delete_review():
     finally:
         conn.close()
 
-# ---- Gallery admin ----
+# -----------------------------
+# Admin Gallery API (NEW)
+# -----------------------------
 @app.get("/api/admin/gallery")
 @admin_required
 def api_admin_gallery_list():
     conn = get_db()
     try:
-        if not has_table(conn, "gallery_images"):
-            return jsonify({"ok": True, "total": 0, "images": []})
-
+        ensure_schema(conn)
         rows = conn.execute(
             """
             SELECT id, filename, category, alt, created_at
               FROM gallery_images
              ORDER BY created_at DESC, id DESC
-             LIMIT 5000
             """
         ).fetchall()
 
-        images = [{
-            "id": r["id"],
-            "filename": r["filename"],
-            "url": f"/assets/gallery/{r['filename']}",
-            "category": r["category"],
-            "alt": r["alt"] or "",
-            "created_at": r["created_at"],
-        } for r in rows]
+        images = []
+        for r in rows:
+            images.append({
+                "id": r["id"],
+                "filename": r["filename"],
+                "category": r["category"],
+                "alt": r["alt"] or "",
+                "created_at": r["created_at"],
+                "url": gallery_url_for(r["filename"]),  # <-- absolute path
+            })
 
-        total = conn.execute("SELECT COUNT(*) AS n FROM gallery_images").fetchone()["n"]
-        return jsonify({"ok": True, "total": total, "images": images})
+        return jsonify({"ok": True, "images": images})
     finally:
         conn.close()
-
 
 @app.post("/api/admin/gallery/upload")
 @admin_write_required
 def api_admin_gallery_upload():
-    """
-    multipart/form-data:
-      file: <image>
-      category: <string>   (required)
-      alt: <string>        (optional)
-    """
-    if "file" not in request.files:
-        return jsonify({"ok": False, "error": "missing_file"}), 400
+    ensure_gallery_dir()
 
-    f = request.files["file"]
-    orig_name = (f.filename or "").strip()
-    if not orig_name or not is_allowed_filename(orig_name):
-        return jsonify({"ok": False, "error": "bad_file_type"}), 400
+    # Must be multipart/form-data
+    f = request.files.get("file")
+    category = (request.form.get("category") or "").strip()
+    alt = (request.form.get("alt") or "").strip()
 
-    category = safe_category(request.form.get("category") or "")
+    if not f:
+        return jsonify({"ok": False, "error": "no_file"}), 400
     if not category:
         return jsonify({"ok": False, "error": "missing_category"}), 400
 
-    alt = safe_alt(request.form.get("alt") or "")
+    ext = safe_ext(f.filename)
+    if ext not in ALLOWED_IMAGE_EXTS:
+        return jsonify({"ok": False, "error": "unsupported_file_type"}), 400
 
-    # Quick content-length guard (best-effort)
+    filename = new_image_filename(ext)
+    disk_path = os.path.join(GALLERY_DIR, filename)
+
+    # Save file first
     try:
-        if request.content_length and request.content_length > (MAX_IMAGE_BYTES + 1024 * 1024):
-            return jsonify({"ok": False, "error": "file_too_large"}), 413
+        f.save(disk_path)
     except Exception:
-        pass
+        return jsonify({"ok": False, "error": "save_failed"}), 500
 
-    Path(GALLERY_DIR).mkdir(parents=True, exist_ok=True)
-
-    stored = make_stored_filename(orig_name)
-    dest_path = os.path.join(GALLERY_DIR, stored)
-
-    # Save file
-    f.save(dest_path)
-
-    # Hard size cap on disk
+    # Ensure readable by nginx (http). Usually fine if umask is sane; enforce:
     try:
-        if os.path.getsize(dest_path) > MAX_IMAGE_BYTES:
-            os.remove(dest_path)
-            return jsonify({"ok": False, "error": "file_too_large"}), 413
+        os.chmod(disk_path, 0o644)
     except Exception:
         pass
 
@@ -688,62 +642,55 @@ def api_admin_gallery_upload():
         ensure_schema(conn)
         conn.execute(
             "INSERT INTO gallery_images(filename, category, alt) VALUES (?, ?, ?)",
-            (stored, category, alt or None),
+            (filename, category, (alt or None)),
         )
         conn.commit()
-        return jsonify({"ok": True, "url": f"/assets/gallery/{stored}", "filename": stored})
-    except Exception as e:
-        # avoid orphan files if DB insert fails
+    except Exception:
+        # If DB insert fails, remove file to avoid orphans
         try:
-            os.remove(dest_path)
+            os.remove(disk_path)
         except Exception:
             pass
-        return jsonify({"ok": False, "error": "server_error", "detail": str(e)}), 500
+        return jsonify({"ok": False, "error": "db_insert_failed"}), 500
     finally:
         conn.close()
 
+    return jsonify({"ok": True, "filename": filename, "url": gallery_url_for(filename)})
 
 @app.post("/api/admin/gallery/delete")
 @admin_write_required
 def api_admin_gallery_delete():
-    # Accept JSON {"id":123} or form id=123
-    if request.is_json:
-        data = request.get_json(silent=True) or {}
-        rid = str(data.get("id") or "").strip()
-    else:
-        rid = (request.form.get("id") or "").strip()
-
+    rid = (request.form.get("id") or "").strip()
     if not rid.isdigit():
         return jsonify({"ok": False, "error": "bad_id"}), 400
 
     conn = get_db()
+    filename = None
     try:
         ensure_schema(conn)
-        row = conn.execute(
-            "SELECT filename FROM gallery_images WHERE id = ?",
-            (int(rid),)
-        ).fetchone()
-
+        row = conn.execute("SELECT filename FROM gallery_images WHERE id = ?", (int(rid),)).fetchone()
         if not row:
             return jsonify({"ok": False, "error": "not_found"}), 404
-
         filename = row["filename"]
 
         cur = conn.execute("DELETE FROM gallery_images WHERE id = ?", (int(rid),))
         conn.commit()
-
-        # Remove file from disk (best-effort)
-        try:
-            path = os.path.join(GALLERY_DIR, filename)
-            if os.path.exists(path):
-                os.remove(path)
-        except Exception:
-            pass
-
-        return jsonify({"ok": True, "deleted": cur.rowcount})
+        if cur.rowcount != 1:
+            return jsonify({"ok": False, "error": "not_found"}), 404
     finally:
         conn.close()
 
+    # Remove file from disk
+    if filename:
+        try:
+            os.remove(os.path.join(GALLERY_DIR, filename))
+        except FileNotFoundError:
+            pass
+        except Exception:
+            # Don't fail the API if file deletion fails; DB is already updated
+            pass
+
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

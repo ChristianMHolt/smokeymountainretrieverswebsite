@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Logging out…</title>
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+  <style>
+    body{ background:#f7faf8; }
+    .card{ border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="card p-4 text-center">
+          <h1 class="h5 mb-2">Logging out…</h1>
+          <div class="text-muted" style="font-weight:600;">Please wait.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+  <script>
+    (async () => {
+      try { await smrAdmin.logout(); } catch {}
+      window.location.replace("/admin/login.html");
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Reviews | Smoky Mountain Retrievers</title>
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+  <style>
+    body{ background:#f7faf8; }
+    .card{ border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .msg{ white-space: pre-wrap; }
+    .badge-rating{ font-weight: 900; }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div>
+        <h1 class="h3 mb-0">Reviews manager</h1>
+        <div class="text-muted" style="font-weight:600;">View all reviews and delete anything you don’t want displayed.</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/index.html">Dashboard</a>
+        <a class="btn btn-outline-secondary btn-sm" href="/" title="Back to site">Home</a>
+        <button class="btn btn-outline-danger btn-sm" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div id="alert" class="alert d-none" role="alert"></div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-4">
+        <div class="card p-3">
+          <div class="text-muted" style="font-weight:700;">Total reviews</div>
+          <div id="countTotal" style="font-size:2rem; font-weight:900;">—</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-8">
+        <div class="card p-3">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="text-muted" style="font-weight:700;">Controls</div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm" id="refreshBtn">Refresh</button>
+            </div>
+          </div>
+          <div class="text-muted mt-2" style="font-weight:600;">
+            Deleting a review removes it from the database immediately.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h5 mb-0">All reviews</h2>
+      </div>
+      <hr/>
+
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Created</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Rating</th>
+              <th style="min-width: 320px;">Message</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsBody"></tbody>
+        </table>
+      </div>
+
+      <div id="empty" class="text-muted mt-3 d-none" style="font-weight:700;">No reviews found.</div>
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+  <script>
+    const alertBox = document.getElementById("alert");
+    const reviewsBody = document.getElementById("reviewsBody");
+    const empty = document.getElementById("empty");
+    const countTotal = document.getElementById("countTotal");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    function showAlert(type, msg){
+      alertBox.className = "alert";
+      alertBox.classList.remove("d-none");
+      alertBox.classList.add(type === "success" ? "alert-success" : "alert-danger");
+      alertBox.textContent = msg;
+    }
+    function clearAlert(){
+      alertBox.className = "alert d-none";
+      alertBox.textContent = "";
+    }
+
+    function td(text, cls=""){
+      const el = document.createElement("td");
+      el.textContent = text ?? "";
+      if (cls) el.className = cls;
+      return el;
+    }
+
+    function ratingBadge(r){
+      const n = Number(r) || 0;
+      const span = document.createElement("span");
+      span.className = "badge bg-light text-dark border badge-rating";
+      span.textContent = `${n}/5`;
+      return span;
+    }
+
+    function deleteBtn(id){
+      const b = document.createElement("button");
+      b.className = "btn btn-outline-danger btn-sm";
+      b.textContent = "Delete";
+      b.addEventListener("click", async () => {
+        if (!confirm(`Delete review ${id}? This cannot be undone.`)) return;
+        clearAlert();
+        try {
+          await smrAdmin.deleteReview(id);
+          showAlert("success", `Deleted review ${id}.`);
+          await load();
+        } catch (e) {
+          showAlert("error", e.message || "Delete failed.");
+        }
+      });
+      return b;
+    }
+
+    async function load(){
+      clearAlert();
+
+      const me = await smrAdmin.me();
+      if (!me.is_admin) {
+        window.location.href = "/admin/login.html";
+        return;
+      }
+
+      const data = await smrAdmin.getReviews(500);
+      countTotal.textContent = data.total ?? (data.reviews?.length || 0);
+
+      reviewsBody.innerHTML = "";
+      if (!data.reviews || !data.reviews.length) {
+        empty.classList.remove("d-none");
+        return;
+      }
+      empty.classList.add("d-none");
+
+      for (const r of data.reviews) {
+        const tr = document.createElement("tr");
+        tr.appendChild(td(String(r.id ?? ""), "mono"));
+        tr.appendChild(td(r.created_at || ""));
+        tr.appendChild(td(r.name || ""));
+        tr.appendChild(td(r.email || ""));
+        const ratingCell = document.createElement("td");
+        ratingCell.appendChild(ratingBadge(r.rating));
+        tr.appendChild(ratingCell);
+
+        const msgCell = document.createElement("td");
+        msgCell.className = "msg";
+        msgCell.textContent = r.message || "";
+        tr.appendChild(msgCell);
+
+        const act = document.createElement("td");
+        act.className = "text-end";
+        act.appendChild(deleteBtn(r.id));
+        tr.appendChild(act);
+
+        reviewsBody.appendChild(tr);
+      }
+    }
+
+    refreshBtn.addEventListener("click", load);
+
+    logoutBtn.addEventListener("click", async () => {
+      clearAlert();
+      try {
+        await smrAdmin.logout();
+        window.location.href = "/admin/login.html";
+      } catch (e) {
+        showAlert("error", e.message || "Logout failed.");
+      }
+    });
+
+    load().catch(() => showAlert("error", "Failed to load reviews. If this persists, log in again."));
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Codes | Smoky Mountain Retrievers</title>
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+  <style>
+    body{ background:#f7faf8; }
+    .card{ border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+    code{ font-weight: 800; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1 class="h3 mb-0">Review verification codes</h1>
+        <div class="text-muted" style="font-weight:600;">Manage one-time codes used to submit reviews.</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="/" title="Back to site">Home</a>
+        <button class="btn btn-outline-danger" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div id="alert" class="alert d-none" role="alert"></div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-4">
+        <div class="card p-3">
+          <div class="text-muted" style="font-weight:700;">Unused</div>
+          <div id="countUnused" style="font-size:2rem; font-weight:900;">—</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card p-3">
+          <div class="text-muted" style="font-weight:700;">Used</div>
+          <div id="countUsed" style="font-size:2rem; font-weight:900;">—</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card p-3">
+          <div class="text-muted" style="font-weight:700;">Total</div>
+          <div id="countTotal" style="font-size:2rem; font-weight:900;">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- Add codes -->
+      <div class="col-12 col-lg-5">
+        <div class="card p-3">
+          <h2 class="h5">Add new codes</h2>
+          <p class="text-muted" style="font-weight:600;">One per line. Exactly 3 digits. Example: <code>007</code></p>
+
+          <form id="addForm">
+            <div class="mb-3">
+              <textarea class="form-control" name="codes" rows="10" placeholder="007&#10;123&#10;456" required></textarea>
+            </div>
+            <button class="btn btn-success" type="submit" id="addBtn">Add codes</button>
+            <a class="btn btn-outline-primary ms-2" href="/api/admin/codes/unused.csv">Download unused CSV</a>
+          </form>
+        </div>
+      </div>
+
+      <!-- Unused codes -->
+      <div class="col-12 col-lg-7">
+        <div class="card p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Unused codes</h2>
+            <button class="btn btn-outline-secondary btn-sm" id="refreshBtn">Refresh</button>
+          </div>
+          <div class="text-muted" style="font-weight:600;">Tip: click delete to remove a code.</div>
+          <hr/>
+
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Created</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="unusedBody"></tbody>
+            </table>
+          </div>
+
+          <div id="unusedEmpty" class="text-muted mt-3 d-none" style="font-weight:700;">No unused codes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Used codes -->
+    <div class="card p-3 mt-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h5 mb-0">Used codes</h2>
+      </div>
+      <div class="text-muted" style="font-weight:600;">Shows who redeemed each code (name/email) and when.</div>
+      <hr/>
+
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Used at</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usedBody"></tbody>
+        </table>
+      </div>
+
+      <div id="usedEmpty" class="text-muted mt-3 d-none" style="font-weight:700;">No used codes yet.</div>
+    </div>
+
+    <p class="text-muted mt-4" style="font-weight:650;">
+      Recommended: restrict <code>/admin</code> in nginx too (IP allowlist or Basic Auth).
+    </p>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+  <script>
+    const alertBox = document.getElementById("alert");
+    const unusedBody = document.getElementById("unusedBody");
+    const usedBody = document.getElementById("usedBody");
+    const unusedEmpty = document.getElementById("unusedEmpty");
+    const usedEmpty = document.getElementById("usedEmpty");
+
+    const countUnused = document.getElementById("countUnused");
+    const countUsed = document.getElementById("countUsed");
+    const countTotal = document.getElementById("countTotal");
+
+    const refreshBtn = document.getElementById("refreshBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const addForm = document.getElementById("addForm");
+    const addBtn = document.getElementById("addBtn");
+
+    function showAlert(type, msg){
+      alertBox.className = "alert";
+      alertBox.classList.remove("d-none");
+      alertBox.classList.add(type === "success" ? "alert-success" : "alert-danger");
+      alertBox.textContent = msg;
+    }
+    function clearAlert(){
+      alertBox.className = "alert d-none";
+      alertBox.textContent = "";
+    }
+
+    function td(text, cls=""){
+      const el = document.createElement("td");
+      el.textContent = text ?? "";
+      if (cls) el.className = cls;
+      return el;
+    }
+
+    function btnDelete(code){
+      const b = document.createElement("button");
+      b.className = "btn btn-outline-danger btn-sm";
+      b.textContent = "Delete";
+      b.addEventListener("click", async () => {
+        if (!confirm(`Delete code ${code}?`)) return;
+        clearAlert();
+        try {
+          await smrAdmin.deleteCode(code);
+          showAlert("success", `Deleted code ${code}.`);
+          await load();
+        } catch (e) {
+          showAlert("error", e.message || "Delete failed.");
+        }
+      });
+      return b;
+    }
+
+    async function load(){
+      clearAlert();
+
+      // Ensure session
+      const me = await smrAdmin.me();
+      if (!me.is_admin) {
+        window.location.href = "/admin/login.html";
+        return;
+      }
+
+      const data = await smrAdmin.getCodes();
+      countUnused.textContent = data.counts.unused;
+      countUsed.textContent = data.counts.used;
+      countTotal.textContent = data.counts.total;
+
+      // Unused
+      unusedBody.innerHTML = "";
+      if (!data.unused_codes.length) {
+        unusedEmpty.classList.remove("d-none");
+      } else {
+        unusedEmpty.classList.add("d-none");
+        for (const r of data.unused_codes) {
+          const tr = document.createElement("tr");
+          const codeCell = document.createElement("td");
+          codeCell.innerHTML = `<span class="badge bg-light text-dark border mono" style="font-weight:900; padding:.45rem .55rem;">${r.code}</span>`;
+          tr.appendChild(codeCell);
+          tr.appendChild(td(r.created_at || ""));
+          const act = document.createElement("td");
+          act.className = "text-end";
+          act.appendChild(btnDelete(r.code));
+          tr.appendChild(act);
+          unusedBody.appendChild(tr);
+        }
+      }
+
+      // Used
+      usedBody.innerHTML = "";
+      if (!data.used_codes.length) {
+        usedEmpty.classList.remove("d-none");
+      } else {
+        usedEmpty.classList.add("d-none");
+        for (const r of data.used_codes) {
+          const tr = document.createElement("tr");
+          tr.appendChild(td(r.code, "mono"));
+          tr.appendChild(td(r.used_at || ""));
+          tr.appendChild(td(r.used_by_name || ""));
+          tr.appendChild(td(r.used_by_email || ""));
+          const act = document.createElement("td");
+          act.className = "text-end";
+          act.appendChild(btnDelete(r.code));
+          tr.appendChild(act);
+          usedBody.appendChild(tr);
+        }
+      }
+    }
+
+    refreshBtn.addEventListener("click", load);
+
+    logoutBtn.addEventListener("click", async () => {
+      clearAlert();
+      try {
+        await smrAdmin.logout();
+        window.location.href = "/admin/login.html";
+      } catch (e) {
+        showAlert("error", e.message || "Logout failed.");
+      }
+    });
+
+    addForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearAlert();
+
+      addBtn.disabled = true;
+      const original = addBtn.textContent;
+      addBtn.textContent = "Adding…";
+
+      try {
+        const codes = new FormData(addForm).get("codes") || "";
+        await smrAdmin.addCodes(String(codes));
+        addForm.reset();
+        showAlert("success", "Codes added (duplicates ignored).");
+        await load();
+      } catch (e) {
+        showAlert("error", e.message || "Add failed.");
+      } finally {
+        addBtn.disabled = false;
+        addBtn.textContent = original;
+      }
+    });
+
+    load().catch(() => {
+      showAlert("error", "Failed to load admin data. If this persists, log in again.");
+    });
+  </script>
+</body>
+</html>

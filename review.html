@@ -9,7 +9,6 @@
   <link rel="icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
 
-  <!-- Matches your Mobirise font choice -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -210,6 +209,27 @@
       box-shadow: 0 0 0 .22rem rgba(220,38,38,.10);
     }
 
+    /* Inline alert */
+    .form-alert{
+      display:none;
+      margin-bottom: 1rem;
+      padding: .9rem 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-weight: 800;
+      background: rgba(255,255,255,.9);
+    }
+    .form-alert.show{ display:block; }
+    .form-alert.success{
+      border-color: rgba(47,191,113,.35);
+      box-shadow: 0 0 0 .22rem rgba(47,191,113,.10);
+    }
+    .form-alert.error{
+      border-color: rgba(220,38,38,.35);
+      box-shadow: 0 0 0 .22rem rgba(220,38,38,.10);
+      color: #991b1b;
+    }
+
     /* Footer */
     footer{
       border-top: 1px solid var(--border);
@@ -240,15 +260,9 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="navMain">
         <ul class="navbar-nav align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html#people04-1i">Testimonials</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="index.html#contacts02-9">Contacts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="reviews.html">All Reviews</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="index.html#people04-1i">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#contacts02-9">Contacts</a></li>
+          <li class="nav-item"><a class="nav-link" href="reviews.html">All Reviews</a></li>
         </ul>
       </div>
     </div>
@@ -266,6 +280,8 @@
         <div class="row justify-content-center">
           <div class="col-12 col-lg-9 col-xl-8">
             <div class="form-card">
+              <div id="form-alert" class="form-alert" role="status" aria-live="polite"></div>
+
               <form id="review-form" action="/submit-review" method="POST" novalidate>
                 <div class="row g-3">
                   <div class="col-12 col-md-6" id="group-name">
@@ -280,17 +296,38 @@
                     <div class="field-error">Please enter a valid email address.</div>
                   </div>
 
+                  <!-- NEW: 3-digit verification code -->
+                  <div class="col-12 col-md-6" id="group-code">
+                    <label class="form-label" for="review-code">Verification code</label>
+                    <input
+                      class="form-control"
+                      id="review-code"
+                      name="code"
+                      type="text"
+                      inputmode="numeric"
+                      pattern="\\d{3}"
+                      placeholder="3-digit code"
+                      autocomplete="one-time-code"
+                      maxlength="3"
+                      required
+                    />
+                    <div class="field-error">Enter the 3-digit code you received.</div>
+                  </div>
+
+                  <div class="col-12 col-md-6 d-flex align-items-end">
+                    <p class="rating-hint mb-0">
+                      Only verified customers can submit reviews. If you don’t have a code, please contact us.
+                    </p>
+                  </div>
+
                   <div class="col-12" id="group-rating">
                     <label class="form-label" for="review-rating">Rating</label>
 
-                    <!-- Hidden/real value sent to server -->
                     <input type="hidden" id="review-rating" name="rating" value="" required />
 
                     <div class="rating-wrap" aria-label="Choose a rating from 1 to 5">
                       <div>
-                        <div class="stars" id="stars" role="radiogroup" aria-label="Star rating">
-                          <!-- Buttons inserted by JS -->
-                        </div>
+                        <div class="stars" id="stars" role="radiogroup" aria-label="Star rating"></div>
                         <p class="rating-hint mb-0">Click a star to select your rating.</p>
                       </div>
 
@@ -334,27 +371,42 @@
   <script>
     const form = document.getElementById("review-form");
     const submitBtn = document.getElementById("submit-btn");
+    const alertBox = document.getElementById("form-alert");
 
     const nameEl = document.getElementById("review-name");
     const emailEl = document.getElementById("review-email");
+    const codeEl = document.getElementById("review-code");
     const ratingEl = document.getElementById("review-rating"); // hidden input
     const messageEl = document.getElementById("review-message");
 
     const groupName = document.getElementById("group-name");
     const groupEmail = document.getElementById("group-email");
+    const groupCode = document.getElementById("group-code");
     const groupRating = document.getElementById("group-rating");
     const groupMessage = document.getElementById("group-message");
 
     const starsWrap = document.getElementById("stars");
     const ratingText = document.getElementById("rating-text");
 
+    function showAlert(type, text){
+      alertBox.className = "form-alert show " + (type === "success" ? "success" : "error");
+      alertBox.textContent = text;
+    }
+    function clearAlert(){
+      alertBox.className = "form-alert";
+      alertBox.textContent = "";
+    }
+
     function setGroupValid(group, valid){
       group.classList.toggle("invalid", !valid);
     }
 
     function validEmail(value){
-      // simple practical email check
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function validCode(value){
+      return /^\d{3}$/.test(value.trim());
     }
 
     function makeStarButton(index){
@@ -364,19 +416,15 @@
       btn.setAttribute("aria-label", `${index} star${index === 1 ? "" : "s"}`);
       btn.dataset.value = String(index);
 
-      // SVG star
       btn.innerHTML = `
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
           <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
         </svg>
       `;
 
-      btn.addEventListener("click", () => {
-        setRating(index);
-      });
+      btn.addEventListener("click", () => setRating(index));
 
       btn.addEventListener("keydown", (e) => {
-        // keyboard support
         if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
           e.preventDefault();
           setRating(Math.max(1, (Number(ratingEl.value) || 1) - 1));
@@ -411,37 +459,45 @@
     }
 
     // Build stars
-    for (let i = 1; i <= 5; i++){
-      starsWrap.appendChild(makeStarButton(i));
-    }
+    for (let i = 1; i <= 5; i++) starsWrap.appendChild(makeStarButton(i));
+
+    // Auto-format verification code: digits only, max 3
+    codeEl.addEventListener("input", () => {
+      const digits = codeEl.value.replace(/\D/g, "").slice(0, 3);
+      codeEl.value = digits;
+      setGroupValid(groupCode, validCode(digits));
+    });
 
     function validate(){
       const nameOk = nameEl.value.trim().length > 0;
       const emailOk = validEmail(emailEl.value.trim());
+      const codeOk = validCode(codeEl.value);
       const ratingOk = Number(ratingEl.value) >= 1 && Number(ratingEl.value) <= 5;
       const messageOk = messageEl.value.trim().length > 0;
 
       setGroupValid(groupName, nameOk);
       setGroupValid(groupEmail, emailOk);
+      setGroupValid(groupCode, codeOk);
       setGroupValid(groupRating, ratingOk);
       setGroupValid(groupMessage, messageOk);
 
-      return nameOk && emailOk && ratingOk && messageOk;
+      return nameOk && emailOk && codeOk && ratingOk && messageOk;
     }
 
-    // Live validation (lightweight)
+    // Live validation
     nameEl.addEventListener("input", () => setGroupValid(groupName, nameEl.value.trim().length > 0));
     emailEl.addEventListener("input", () => setGroupValid(groupEmail, validEmail(emailEl.value.trim())));
     messageEl.addEventListener("input", () => setGroupValid(groupMessage, messageEl.value.trim().length > 0));
 
     form.addEventListener("submit", async (e) => {
+      clearAlert();
+
       if (!validate()){
         e.preventDefault();
+        showAlert("error", "Please fix the highlighted fields and try again.");
         return;
       }
 
-      // Optional: submit via fetch for smoother UX.
-      // If you'd rather rely on normal HTML form submission, delete everything below this line.
       e.preventDefault();
 
       submitBtn.disabled = true;
@@ -452,15 +508,24 @@
         const formData = new FormData(form);
         const res = await fetch(form.action, { method: "POST", body: formData });
 
-        if (!res.ok) throw new Error("Submit failed");
+        if (res.status === 401 || res.status === 403) {
+          // Server should return 401/403 for invalid code
+          throw new Error("invalid_code");
+        }
+        if (!res.ok) throw new Error("submit_failed");
 
-        // Simple success state
         form.reset();
         ratingEl.value = "";
-        ratingText.textContent = "Thanks! Your review was submitted.";
+        ratingText.textContent = "No rating selected";
         starsWrap.querySelectorAll(".star-btn").forEach((b) => b.classList.remove("filled"));
+        showAlert("success", "Thanks! Your review was submitted.");
       } catch (err) {
-        ratingText.textContent = "Sorry—something went wrong. Please try again.";
+        if (String(err.message) === "invalid_code") {
+          setGroupValid(groupCode, false);
+          showAlert("error", "That verification code is not valid. Please check it and try again.");
+        } else {
+          showAlert("error", "Sorry—something went wrong. Please try again.");
+        }
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
@@ -469,6 +534,3 @@
   </script>
 </body>
 </html>
-
-
-

@@ -230,6 +230,29 @@
       background: #fff;
     }
 
+    /* NEW: Gallery header row (title + button across from each other) */
+    .gallery-header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .gallery-header .section-title{
+      text-align: left; /* so it doesn't look odd when left aligned on wide screens */
+      margin: 0;
+    }
+    @media (max-width: 575.98px){
+      .gallery-header{
+        justify-content: center;
+        text-align: center;
+      }
+      .gallery-header .section-title{
+        text-align: center;
+        width: 100%;
+      }
+    }
+
     /* Testimonials */
     .testimonials-header{
       display:flex;
@@ -436,7 +459,6 @@
           <a class="btn btn-primary" href="review.html">Leave a Review</a>
           <a class="btn btn-outline-primary" href="reviews.html">See All Reviews</a>
           <a class="btn btn-outline-primary" href="#contact">Contact</a>
-          <!-- OPTIONAL: quick gallery link -->
           <a class="btn btn-outline-primary" href="gallery.html">View Full Gallery</a>
         </div>
 
@@ -450,13 +472,13 @@
   <!-- GALLERY -->
   <section class="section" id="gallery">
     <div class="container">
-      <h2 class="section-title">Gallery</h2>
-      <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
-
-      <!-- NEW: Full gallery button -->
-      <div class="d-flex justify-content-center mt-3">
+      <!-- CHANGED: title + button are in the same row, across from each other -->
+      <div class="gallery-header">
+        <h2 class="section-title">Gallery</h2>
         <a class="btn btn-outline-primary" href="gallery.html">View Full Gallery</a>
       </div>
+
+      <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
 
       <div class="gallery-grid" id="gallery-grid">
         <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png" data-alt="Bear">

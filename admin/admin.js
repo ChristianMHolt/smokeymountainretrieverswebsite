@@ -22,8 +22,8 @@ window.smrAdmin = (() => {
     return jsonOrThrow(res);
   }
 
-  async function getCodes(limit = 500) {
-    const res = await fetch(`${BASE}/codes?limit=${encodeURIComponent(limit)}`, {
+  async function getCodes() {
+    const res = await fetch(`${BASE}/codes?limit=500`, {
       credentials: "include",
       headers: headers()
     });
@@ -56,6 +56,28 @@ window.smrAdmin = (() => {
     return jsonOrThrow(res);
   }
 
+  // -------- Reviews (NEW) --------
+  async function getReviews(limit = 500) {
+    const res = await fetch(`${BASE}/reviews?limit=${encodeURIComponent(limit)}`, {
+      credentials: "include",
+      headers: headers()
+    });
+    return jsonOrThrow(res);
+  }
+
+  async function deleteReview(id) {
+    const fd = new FormData();
+    fd.set("id", String(id));
+
+    const res = await fetch(`${BASE}/reviews/delete`, {
+      method: "POST",
+      credentials: "include",
+      headers: headers(),
+      body: fd
+    });
+    return jsonOrThrow(res);
+  }
+
   async function logout() {
     const res = await fetch(`${BASE}/logout`, {
       method: "POST",
@@ -65,5 +87,5 @@ window.smrAdmin = (() => {
     return jsonOrThrow(res);
   }
 
-  return { me, getCodes, addCodes, deleteCode, logout };
+  return { me, getCodes, addCodes, deleteCode, getReviews, deleteReview, logout };
 })();

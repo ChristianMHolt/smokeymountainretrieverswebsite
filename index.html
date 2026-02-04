@@ -153,6 +153,19 @@
       color: #1e9e5d;
     }
 
+    /* --- NEW: universal responsive image rules --- */
+    img{
+      max-width: 100%;
+      height: auto;
+    }
+    /* Scale any resolution down to the box without distortion */
+    .img-fit{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     /* Hero */
     .hero{ padding: 4.25rem 0 2.5rem; }
     .hero h1{
@@ -185,8 +198,15 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       background: var(--surface);
+      /* Optional: give it a predictable height on wide screens */
+      aspect-ratio: 16 / 9;
     }
-    .hero-img img{ width: 100%; height: auto; display:block; }
+    .hero-img img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+    }
 
     /* Gallery */
     .gallery-grid{
@@ -204,15 +224,33 @@
       background: var(--surface);
       cursor: pointer;
       transition: transform .15s ease;
+      /* ensures thumbnails look consistent regardless of image resolution */
+      aspect-ratio: 4 / 3;
     }
     .gallery-item:hover{ transform: translateY(-2px); }
-    .gallery-item img{ width:100%; height: 100%; object-fit: cover; display:block; aspect-ratio: 4 / 3; }
+    .gallery-item img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+    }
 
     @media (max-width: 991.98px){
       .gallery-item{ grid-column: span 6; }
     }
     @media (max-width: 575.98px){
       .gallery-item{ grid-column: span 12; }
+    }
+
+    /* Modal image: show full-res but fit viewport */
+    .modal-img{
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 85vh; /* prevents huge vertical images from going off-screen */
+      display: block;
+      margin: 0 auto;
+      background: #fff;
     }
 
     /* Testimonials */
@@ -388,7 +426,7 @@
           <li class="nav-item"><a class="nav-link" href="reviews.html">All Reviews</a></li>
           <li class="nav-item"><a class="nav-link" href="review.html">Leave a Review</a></li>
 
-          <!-- NEW: Admin login button -->
+          <!-- Admin login button -->
           <li class="nav-item ms-lg-2">
             <a class="nav-link nav-btn" href="/admin/login" aria-label="Admin login">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -425,7 +463,7 @@
         </div>
 
         <div class="hero-img mt-4">
-          <img src="assets/images/img-12-2238x2984.png" alt="Smoky Mountain Retrievers" />
+          <img class="img-fit" src="assets/images/img-12-2238x2984.png" alt="Smoky Mountain Retrievers" loading="lazy" decoding="async" />
         </div>
       </div>
     </div>
@@ -438,17 +476,19 @@
       <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
 
       <div class="gallery-grid" id="gallery-grid">
-        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png">
-          <img src="assets/images/bear-511x582.png" alt="Gallery image 1">
+        <!-- NOTE: data-full should point to your full-resolution image.
+             You can keep thumbnail src the same file, or use a smaller thumbnail file if you add one later. -->
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png" data-alt="Bear">
+          <img class="img-fit" src="assets/images/bear-511x582.png" alt="Bear" loading="lazy" decoding="async">
         </div>
-        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/maple-511x595.png">
-          <img src="assets/images/maple-511x595.png" alt="Gallery image 2">
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/maple-511x595.png" data-alt="Maple">
+          <img class="img-fit" src="assets/images/maple-511x595.png" alt="Maple" loading="lazy" decoding="async">
         </div>
-        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/img-672-511x681.png">
-          <img src="assets/images/img-672-511x681.png" alt="Gallery image 3">
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/img-672-511x681.png" data-alt="Puppy">
+          <img class="img-fit" src="assets/images/img-672-511x681.png" alt="Puppy" loading="lazy" decoding="async">
         </div>
-        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/lastlitter-511x383.png">
-          <img src="assets/images/lastlitter-511x383.png" alt="Gallery image 4">
+        <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/lastlitter-511x383.png" data-alt="Last litter">
+          <img class="img-fit" src="assets/images/lastlitter-511x383.png" alt="Last litter" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -458,7 +498,7 @@
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content" style="border-radius: 18px; overflow:hidden;">
           <div class="modal-body p-0">
-            <img id="galleryModalImg" src="" alt="Expanded gallery" style="width:100%; height:auto; display:block;">
+            <img id="galleryModalImg" class="modal-img" src="" alt="Expanded gallery">
           </div>
           <div class="modal-footer" style="justify-content:center;">
             <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
@@ -541,7 +581,6 @@
         </div>
 
         <div class="card-lite map-card">
-          <!-- Keyless map embed (no API key exposed) -->
           <iframe
             class="map-embed"
             loading="lazy"
@@ -567,15 +606,35 @@
   <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // --- Gallery modal
+    // --- Gallery modal: always load the "full resolution" URL from data-full
     const modalImg = document.getElementById("galleryModalImg");
-    document.getElementById("gallery-grid")?.addEventListener("click", (e) => {
+    const grid = document.getElementById("gallery-grid");
+    const modalEl = document.getElementById("galleryModal");
+
+    let lastFull = null;
+    let lastAlt = "Expanded gallery";
+
+    function setModalImage(fullUrl, altText){
+      if (!modalImg || !fullUrl) return;
+      modalImg.src = fullUrl;
+      modalImg.alt = altText || "Expanded gallery";
+    }
+
+    grid?.addEventListener("click", (e) => {
       const item = e.target.closest(".gallery-item");
       if (!item) return;
-      const full = item.getAttribute("data-full");
-      if (modalImg && full) modalImg.src = full;
+      lastFull = item.getAttribute("data-full");
+      lastAlt = item.getAttribute("data-alt") || item.querySelector("img")?.alt || "Expanded gallery";
+      setModalImage(lastFull, lastAlt);
     });
 
+    // Also handle keyboard activation / bootstrap showing event
+    modalEl?.addEventListener("show.bs.modal", () => {
+      if (lastFull) setModalImage(lastFull, lastAlt);
+    });
+  </script>
+
+  <script>
     // --- Reviews (safe rendering + SVG stars)
     const testimonialsGrid = document.getElementById("testimonials-grid");
     const testimonialsStatus = document.getElementById("testimonials-status");
@@ -694,8 +753,8 @@
     loadTestimonials();
   </script>
 
-  <!-- CONTACT FORM AJAX SUBMIT -->
   <script>
+    // --- CONTACT FORM AJAX SUBMIT
     document.getElementById("contact-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const form = e.target;

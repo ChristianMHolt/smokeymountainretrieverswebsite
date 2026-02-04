@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery | Smoky Mountain Retrievers</title>
+  <meta name="description" content="Full photo gallery for Smoky Mountain Retrievers." />
+
+  <link rel="icon" href="assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;
+      --surface: #ffffff;
+      --border: rgba(17, 24, 39, .10);
+      --text: #0f172a;
+      --muted: rgba(15, 23, 42, .70);
+      --brand: #2fbf71;
+      --brand-soft: rgba(47, 191, 113, .12);
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      --radius: 18px;
+    }
+
+    body{
+      font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    img{ max-width: 100%; height: auto; }
+    .img-fit{ width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .site-nav{
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-lockup{
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none;
+    }
+    .brand-lockup img{ width: 40px; height:auto; }
+    .brand-lockup span{
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: var(--text);
+    }
+
+    .wrap{ padding: 2.25rem 0 3.25rem; }
+
+    .panel{
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.92));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+    }
+
+    .title{
+      font-weight: 950;
+      letter-spacing: -.6px;
+      margin: 0;
+      font-size: clamp(1.8rem, 1.6vw + 1.1rem, 2.6rem);
+    }
+    .subtitle{
+      margin-top: .65rem;
+      color: var(--muted);
+      font-weight: 650;
+      max-width: 58rem;
+    }
+
+    /* "Rows of images" – responsive grid that becomes rows naturally */
+    .g-grid{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .g-item{
+      grid-column: span 3;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+      background: var(--surface);
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
+      aspect-ratio: 4 / 3;
+    }
+    .g-item:hover{
+      transform: translateY(-2px);
+      border-color: rgba(47,191,113,.35);
+    }
+
+    @media (max-width: 991.98px){
+      .g-item{ grid-column: span 6; }
+    }
+    @media (max-width: 575.98px){
+      .g-item{ grid-column: span 12; }
+    }
+
+    .modal-img{
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 85vh;
+      display: block;
+      margin: 0 auto;
+      background: #fff;
+    }
+
+    .btn-outline-primary{
+      border-color: rgba(47,191,113,.45);
+      color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .65rem 1rem;
+      background: rgba(255,255,255,.85);
+    }
+    .btn-outline-primary:hover{
+      background: rgba(47,191,113,.10);
+      border-color: rgba(47,191,113,.55);
+      color: #1e9e5d;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar site-nav sticky-top">
+    <div class="container py-2">
+      <a class="brand-lockup" href="index.html">
+        <img src="assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers logo">
+        <span>Smoky Mountain Retrievers</span>
+      </a>
+      <div class="ms-auto">
+        <a class="btn btn-outline-primary btn-sm" href="index.html#gallery">Back to Home</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <div class="container">
+      <section class="panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+          <div>
+            <h1 class="title">Full Gallery</h1>
+            <p class="subtitle mb-0">
+              Tap any photo to view it at full resolution.
+            </p>
+          </div>
+        </div>
+
+        <div class="g-grid" id="full-gallery">
+          <!-- Add as many as you want: data-full should point to full-res image -->
+          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png" data-alt="Bear">
+            <img class="img-fit" src="assets/images/bear-511x582.png" alt="Bear" loading="lazy" decoding="async">
+          </div>
+
+          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/maple-511x595.png" data-alt="Maple">
+            <img class="img-fit" src="assets/images/maple-511x595.png" alt="Maple" loading="lazy" decoding="async">
+          </div>
+
+          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/img-672-511x681.png" data-alt="Puppy">
+            <img class="img-fit" src="assets/images/img-672-511x681.png" alt="Puppy" loading="lazy" decoding="async">
+          </div>
+
+          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/lastlitter-511x383.png" data-alt="Last litter">
+            <img class="img-fit" src="assets/images/lastlitter-511x383.png" alt="Last litter" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 18px; overflow:hidden;">
+          <div class="modal-body p-0">
+            <img id="galleryModalImg" class="modal-img" src="" alt="Expanded gallery">
+          </div>
+          <div class="modal-footer" style="justify-content:center;">
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const modalImg = document.getElementById("galleryModalImg");
+    const grid = document.getElementById("full-gallery");
+
+    let lastFull = null;
+    let lastAlt = "Expanded gallery";
+
+    function setModalImage(fullUrl, altText){
+      if (!modalImg || !fullUrl) return;
+      modalImg.src = fullUrl;
+      modalImg.alt = altText || "Expanded gallery";
+    }
+
+    grid?.addEventListener("click", (e) => {
+      const item = e.target.closest(".g-item");
+      if (!item) return;
+      lastFull = item.getAttribute("data-full");
+      lastAlt = item.getAttribute("data-alt") || item.querySelector("img")?.alt || "Expanded gallery";
+      setModalImage(lastFull, lastAlt);
+    });
+
+    document.getElementById("galleryModal")?.addEventListener("show.bs.modal", () => {
+      if (lastFull) setModalImage(lastFull, lastAlt);
+    });
+  </script>
+</body>
+</html>

@@ -72,6 +72,30 @@
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2815, 23, 42, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
+    /* NEW: nav button for admin */
+    .nav-btn{
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .55rem .85rem !important;
+      border-radius: 999px;
+      font-weight: 900 !important;
+      border: 1px solid rgba(47,191,113,.45);
+      color: var(--brand) !important;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 18px rgba(47,191,113,.10);
+    }
+    .nav-btn:hover{
+      background: rgba(47,191,113,.10);
+      border-color: rgba(47,191,113,.60);
+      color: #1e9e5d !important;
+    }
+    .nav-btn svg{
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+    }
+
     /* Common */
     .section{ padding: 4rem 0; }
     .section-title{
@@ -363,6 +387,16 @@
           <li class="nav-item"><a class="nav-link" href="#contact">Contacts</a></li>
           <li class="nav-item"><a class="nav-link" href="reviews.html">All Reviews</a></li>
           <li class="nav-item"><a class="nav-link" href="review.html">Leave a Review</a></li>
+
+          <!-- NEW: Admin login button -->
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link nav-btn" href="/admin/login" aria-label="Admin login">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2-8 4.5V21h16v-2.5C20 16 16.42 14 12 14Z"></path>
+              </svg>
+              Admin
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -461,8 +495,6 @@
       <div class="row justify-content-center mt-4">
         <div class="col-12 col-lg-8">
           <div class="card-lite p-4">
-            <!-- IMPORTANT: Change this action to your own backend handler.
-                 Example: action="/contact" if you set up an nginx+backend endpoint. -->
             <form id="contact-form" action="/contact" method="POST">
               <div class="row g-3">
                 <div class="col-md-6">
@@ -662,7 +694,7 @@
     loadTestimonials();
   </script>
 
-  <!-- CONTACT FORM AJAX SUBMIT (your snippet, implemented) -->
+  <!-- CONTACT FORM AJAX SUBMIT -->
   <script>
     document.getElementById("contact-form")?.addEventListener("submit", async (e) => {
       e.preventDefault();

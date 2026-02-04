@@ -72,7 +72,7 @@
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2815, 23, 42, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
-    /* NEW: nav button for admin */
+    /* nav button for admin */
     .nav-btn{
       display: inline-flex;
       align-items: center;
@@ -153,18 +153,8 @@
       color: #1e9e5d;
     }
 
-    /* --- NEW: universal responsive image rules --- */
-    img{
-      max-width: 100%;
-      height: auto;
-    }
-    /* Scale any resolution down to the box without distortion */
-    .img-fit{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+    img{ max-width: 100%; height: auto; }
+    .img-fit{ width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* Hero */
     .hero{ padding: 4.25rem 0 2.5rem; }
@@ -198,15 +188,9 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       background: var(--surface);
-      /* Optional: give it a predictable height on wide screens */
       aspect-ratio: 16 / 9;
     }
-    .hero-img img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
+    .hero-img img{ width: 100%; height: 100%; object-fit: cover; display:block; }
 
     /* Gallery */
     .gallery-grid{
@@ -224,16 +208,10 @@
       background: var(--surface);
       cursor: pointer;
       transition: transform .15s ease;
-      /* ensures thumbnails look consistent regardless of image resolution */
       aspect-ratio: 4 / 3;
     }
     .gallery-item:hover{ transform: translateY(-2px); }
-    .gallery-item img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
+    .gallery-item img{ width:100%; height: 100%; object-fit: cover; display:block; }
 
     @media (max-width: 991.98px){
       .gallery-item{ grid-column: span 6; }
@@ -242,12 +220,11 @@
       .gallery-item{ grid-column: span 12; }
     }
 
-    /* Modal image: show full-res but fit viewport */
     .modal-img{
       width: auto;
       max-width: 100%;
       height: auto;
-      max-height: 85vh; /* prevents huge vertical images from going off-screen */
+      max-height: 85vh;
       display: block;
       margin: 0 auto;
       background: #fff;
@@ -426,7 +403,6 @@
           <li class="nav-item"><a class="nav-link" href="reviews.html">All Reviews</a></li>
           <li class="nav-item"><a class="nav-link" href="review.html">Leave a Review</a></li>
 
-          <!-- Admin login button -->
           <li class="nav-item ms-lg-2">
             <a class="nav-link nav-btn" href="/admin/login" aria-label="Admin login">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -446,7 +422,7 @@
       <div class="panel">
         <h1>Smoky Mountain Retrievers CO</h1>
         <p>
-          At Smoky Mountain Retrievers, we’re dedicated to raising beautiful, loving Golden Retrievers who will be loyal companions for years to come.
+          At Smoky Mountain Retrievers, we’re dedicated to raising beautiful, loving Golden Retrievers who will be “loyal companions” for years to come.
           <br><br>
           Our focus is on healthy, affordable family pets rather than titled show or breeding dogs. While our dogs are not bred for competition, we place a strong
           emphasis on genetic health. All of our puppies have a 0% coefficient of inbreeding (COI), meaning there is no inbreeding or linebreeding in their background.
@@ -460,6 +436,8 @@
           <a class="btn btn-primary" href="review.html">Leave a Review</a>
           <a class="btn btn-outline-primary" href="reviews.html">See All Reviews</a>
           <a class="btn btn-outline-primary" href="#contact">Contact</a>
+          <!-- OPTIONAL: quick gallery link -->
+          <a class="btn btn-outline-primary" href="gallery.html">View Full Gallery</a>
         </div>
 
         <div class="hero-img mt-4">
@@ -475,9 +453,12 @@
       <h2 class="section-title">Gallery</h2>
       <p class="section-subtitle">A few moments from our dogs and puppies. Click an image to view it larger.</p>
 
+      <!-- NEW: Full gallery button -->
+      <div class="d-flex justify-content-center mt-3">
+        <a class="btn btn-outline-primary" href="gallery.html">View Full Gallery</a>
+      </div>
+
       <div class="gallery-grid" id="gallery-grid">
-        <!-- NOTE: data-full should point to your full-resolution image.
-             You can keep thumbnail src the same file, or use a smaller thumbnail file if you add one later. -->
         <div class="gallery-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png" data-alt="Bear">
           <img class="img-fit" src="assets/images/bear-511x582.png" alt="Bear" loading="lazy" decoding="async">
         </div>
@@ -628,7 +609,6 @@
       setModalImage(lastFull, lastAlt);
     });
 
-    // Also handle keyboard activation / bootstrap showing event
     modalEl?.addEventListener("show.bs.modal", () => {
       if (lastFull) setModalImage(lastFull, lastAlt);
     });

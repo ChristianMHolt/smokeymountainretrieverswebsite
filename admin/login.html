@@ -20,6 +20,9 @@
           <div id="alert" class="alert alert-danger d-none" role="alert"></div>
 
           <form id="login-form">
+            <!-- NEW: next redirect target -->
+            <input type="hidden" name="next" id="nextField" value="/admin/index.html" />
+
             <div class="mb-3">
               <label class="form-label">Password</label>
               <input class="form-control" type="password" name="password" required autofocus />
@@ -40,6 +43,16 @@
     const form = document.getElementById("login-form");
     const alertBox = document.getElementById("alert");
     const btn = document.getElementById("btn");
+    const nextField = document.getElementById("nextField");
+
+    // Optional: preserve ?next=... from URL
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const nextParam = params.get("next");
+      if (nextParam && nextParam.startsWith("/")) {
+        nextField.value = nextParam;
+      }
+    } catch {}
 
     function showError(msg){
       alertBox.textContent = msg;
@@ -73,7 +86,8 @@
           throw new Error("Login failed.");
         }
 
-        window.location.href = "/admin/codes.html";
+        const nextUrl = (fd.get("next") || "/admin/index.html").toString();
+        window.location.href = nextUrl;
       } catch (err) {
         showError(err.message || "Login failed.");
       } finally {

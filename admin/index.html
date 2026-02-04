@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard | Smoky Mountain Retrievers</title>
+
+  <link rel="icon" href="/assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;
+      --surface: #ffffff;
+      --border: rgba(17, 24, 39, .10);
+      --text: #0f172a;
+      --muted: rgba(15, 23, 42, .70);
+
+      --brand: #2fbf71;
+      --brand-soft: rgba(47, 191, 113, .12);
+
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      --radius: 18px;
+    }
+
+    body{
+      font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .site-nav{
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-lockup{
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none;
+    }
+    .brand-lockup img{ width: 40px; height:auto; }
+    .brand-lockup span{
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: var(--text);
+    }
+
+    .wrap{ padding: 2.25rem 0 3.25rem; }
+
+    .panel{
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.92));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .title{
+      font-weight: 950;
+      letter-spacing: -.6px;
+      margin: 0;
+      font-size: clamp(1.9rem, 1.6vw + 1.2rem, 2.8rem);
+    }
+    .subtitle{
+      margin-top: .65rem;
+      color: var(--muted);
+      font-weight: 650;
+      max-width: 52rem;
+    }
+
+    .card-tile{
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+      padding: 1.25rem;
+      transition: transform .15s ease, border-color .15s ease;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+      display:block;
+    }
+    .card-tile:hover{
+      transform: translateY(-2px);
+      border-color: rgba(47,191,113,.35);
+    }
+    .tile-kicker{
+      font-weight: 900;
+      color: rgba(15,23,42,.75);
+      letter-spacing: .2px;
+      margin-bottom: .25rem;
+    }
+    .tile-title{
+      font-weight: 950;
+      margin: 0 0 .35rem;
+      font-size: 1.15rem;
+    }
+    .tile-desc{
+      color: var(--muted);
+      font-weight: 650;
+      margin: 0;
+    }
+    .pill{
+      display:inline-block;
+      font-weight: 900;
+      background: var(--brand-soft);
+      color: #1e9e5d;
+      border: 1px solid rgba(47,191,113,.25);
+      border-radius: 999px;
+      padding: .25rem .55rem;
+      font-size: .85rem;
+      margin-top: .75rem;
+    }
+
+    .btn-primary{
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .75rem 1.05rem;
+      box-shadow: 0 10px 18px rgba(47,191,113,.22);
+    }
+    .btn-primary:hover{ background:#26aa64; border-color:#26aa64; }
+    .btn-outline-secondary{
+      border-radius: 14px;
+      font-weight: 900;
+    }
+
+    .footer-note{
+      margin-top: 1.25rem;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: .98rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg site-nav sticky-top">
+    <div class="container py-2">
+      <a class="brand-lockup" href="/index.html">
+        <img src="/assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers logo">
+        <span>Admin</span>
+      </a>
+
+      <div class="ms-auto d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="wrap">
+    <div class="container">
+      <section class="panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div>
+            <h1 class="title">Dashboard</h1>
+            <p class="subtitle mb-0">
+              Manage review verification codes and other admin tools.
+            </p>
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-primary" href="/admin/codes.html">Manage Codes</a>
+            <a class="btn btn-outline-secondary" href="/index.html">View Site</a>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-12 col-md-6 col-lg-4">
+            <a class="card-tile" href="/admin/codes.html">
+              <div class="tile-kicker">Reviews</div>
+              <h2 class="tile-title">Verification Codes</h2>
+              <p class="tile-desc">View unused/used codes, add new codes, and delete codes.</p>
+              <span class="pill">Open codes manager</span>
+            </a>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <a class="card-tile" href="/reviews.html">
+              <div class="tile-kicker">Public</div>
+              <h2 class="tile-title">All Reviews Page</h2>
+              <p class="tile-desc">See what customers see on the reviews listing page.</p>
+              <span class="pill">Open reviews</span>
+            </a>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <a class="card-tile" href="/admin/logout">
+              <div class="tile-kicker">Session</div>
+              <h2 class="tile-title">Logout</h2>
+              <p class="tile-desc">Sign out of the admin area on this browser.</p>
+              <span class="pill">Sign out</span>
+            </a>
+          </div>
+        </div>
+
+        <p class="footer-note mb-0">
+          Tip: You can also restrict <code>/admin</code> at nginx (IP allowlist or Basic Auth) for extra protection.
+        </p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

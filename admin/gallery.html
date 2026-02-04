@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery Manager | Smoky Mountain Retrievers</title>
+
+  <link rel="icon" href="/assets/images/smokymountainretrieverslogo-96x91.png" type="image/png" />
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --bg-tint: #f4fbf6;
+      --surface: #ffffff;
+      --border: rgba(17, 24, 39, .10);
+      --text: #0f172a;
+      --muted: rgba(15, 23, 42, .70);
+      --brand: #2fbf71;
+      --brand-soft: rgba(47, 191, 113, .12);
+      --shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      --radius: 18px;
+    }
+
+    body{
+      font-family: "Inter Tight", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 500px at 15% 0%, rgba(47,191,113,.10), transparent 60%),
+        radial-gradient(900px 450px at 85% 10%, rgba(167,243,208,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg-tint), var(--bg) 35%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .site-nav{
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-lockup{
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none;
+    }
+    .brand-lockup img{ width: 40px; height:auto; }
+    .brand-lockup span{
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: var(--text);
+    }
+
+    .wrap{ padding: 2.25rem 0 3.25rem; }
+
+    .panel{
+      background: linear-gradient(135deg, rgba(47,191,113,.08), rgba(255,255,255,.92));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .title{
+      font-weight: 950;
+      letter-spacing: -.6px;
+      margin: 0;
+      font-size: clamp(1.9rem, 1.6vw + 1.2rem, 2.8rem);
+    }
+    .subtitle{
+      margin-top: .65rem;
+      color: var(--muted);
+      font-weight: 650;
+      max-width: 56rem;
+    }
+
+    .card-lite{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+    }
+
+    .btn-primary{
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: .75rem 1.05rem;
+      box-shadow: 0 10px 18px rgba(47,191,113,.22);
+    }
+    .btn-primary:hover{ background:#26aa64; border-color:#26aa64; }
+    .btn-outline-secondary{
+      border-radius: 14px;
+      font-weight: 900;
+    }
+
+    .form-label{
+      font-weight: 900;
+      color: rgba(15,23,42,.78);
+      margin-bottom: .35rem;
+    }
+    .form-control{
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .form-control:focus{
+      outline: none;
+      box-shadow: 0 0 0 .22rem var(--brand-soft);
+      border-color: rgba(47,191,113,.45);
+    }
+
+    .thumb{
+      width: 86px;
+      height: 64px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: #fff;
+      flex: 0 0 auto;
+    }
+    .thumb img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    .row-item{
+      display:flex;
+      gap: 1rem;
+      align-items:flex-start;
+      padding: .9rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.92);
+    }
+
+    .meta{
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .meta .name{
+      font-weight: 950;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .meta .small{
+      margin: .25rem 0 0;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: .95rem;
+      word-break: break-word;
+    }
+
+    .pill{
+      display:inline-block;
+      font-weight: 900;
+      background: var(--brand-soft);
+      color: #1e9e5d;
+      border: 1px solid rgba(47,191,113,.25);
+      border-radius: 999px;
+      padding: .15rem .55rem;
+      font-size: .82rem;
+      margin-top: .4rem;
+    }
+
+    .stack{ display:flex; flex-direction:column; gap:.75rem; margin-top: 1rem; }
+
+    .danger{
+      font-weight: 900;
+      border-radius: 14px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg site-nav sticky-top">
+    <div class="container py-2">
+      <a class="brand-lockup" href="/admin/index.html">
+        <img src="/assets/images/smokymountainretrieverslogo-96x91.png" alt="Smoky Mountain Retrievers logo">
+        <span>Admin</span>
+      </a>
+
+      <div class="ms-auto d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/index.html">Dashboard</a>
+        <a class="btn btn-outline-secondary btn-sm" href="/gallery.html">View Gallery</a>
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/logout.html">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <div class="container">
+      <section class="panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div>
+            <h1 class="title">Gallery Manager</h1>
+            <p class="subtitle mb-0">
+              Upload images and assign a category. The public gallery page will group images by category automatically.
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-12 col-lg-5">
+            <div class="card-lite p-4">
+              <h2 class="h5" style="font-weight:950; letter-spacing:-.3px;">Upload an image</h2>
+              <div id="uploadAlert" class="alert alert-danger d-none" role="alert"></div>
+              <div id="uploadOk" class="alert alert-success d-none" role="alert"></div>
+
+              <form id="uploadForm">
+                <div class="mb-3">
+                  <label class="form-label">Image file</label>
+                  <input class="form-control" type="file" id="file" name="file" accept="image/*" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Category (required)</label>
+                  <input class="form-control" type="text" id="category" name="category" placeholder="e.g. Puppies, Parents, Past Litters" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Alt text (optional)</label>
+                  <input class="form-control" type="text" id="alt" name="alt" placeholder="Short description for accessibility">
+                </div>
+
+                <button class="btn btn-primary w-100" type="submit" id="uploadBtn">Upload</button>
+              </form>
+
+              <p class="text-muted mb-0 mt-3" style="font-weight:650;">
+                Tip: Use the same category text to group images together.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-7">
+            <div class="card-lite p-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <h2 class="h5 mb-0" style="font-weight:950; letter-spacing:-.3px;">Existing images</h2>
+                <button class="btn btn-outline-secondary btn-sm" id="refreshBtn" type="button">Refresh</button>
+              </div>
+
+              <div id="listStatus" class="text-muted mt-2" style="font-weight:650;">Loading…</div>
+              <div id="list" class="stack"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/admin/admin.js"></script>
+  <script>
+    const uploadForm = document.getElementById("uploadForm");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const uploadAlert = document.getElementById("uploadAlert");
+    const uploadOk = document.getElementById("uploadOk");
+
+    const listStatus = document.getElementById("listStatus");
+    const list = document.getElementById("list");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    function show(el, msg){
+      el.textContent = msg;
+      el.classList.remove("d-none");
+    }
+    function hide(el){
+      el.textContent = "";
+      el.classList.add("d-none");
+    }
+    function clear(node){
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    async function requireAdmin(){
+      const me = await window.smrAdmin.me();
+      if (!me.is_admin) {
+        window.location.href = "/admin/login.html?next=/admin/gallery.html";
+      }
+    }
+
+    function renderRow(img){
+      const row = document.createElement("div");
+      row.className = "row-item";
+
+      const thumb = document.createElement("a");
+      thumb.className = "thumb";
+      thumb.href = img.url;
+      thumb.target = "_blank";
+      thumb.rel = "noopener";
+      thumb.title = "Open full image in new tab";
+
+      const im = document.createElement("img");
+      im.src = img.url;
+      im.alt = img.alt || img.category || "Gallery image";
+      im.loading = "lazy";
+      im.decoding = "async";
+      thumb.appendChild(im);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+
+      const name = document.createElement("p");
+      name.className = "name";
+      name.textContent = img.filename;
+
+      const cat = document.createElement("div");
+      cat.className = "pill";
+      cat.textContent = img.category || "Uncategorized";
+
+      const small = document.createElement("p");
+      small.className = "small";
+      small.textContent = img.url;
+
+      meta.appendChild(name);
+      meta.appendChild(cat);
+      meta.appendChild(small);
+
+      const actions = document.createElement("div");
+      actions.style.flex = "0 0 auto";
+      actions.style.display = "flex";
+      actions.style.alignItems = "center";
+      actions.style.gap = ".5rem";
+
+      const del = document.createElement("button");
+      del.className = "btn btn-outline-danger btn-sm danger";
+      del.type = "button";
+      del.textContent = "Delete";
+
+      del.addEventListener("click", async () => {
+        if (!confirm("Delete this image? This cannot be undone.")) return;
+        del.disabled = true;
+        try {
+          await window.smrAdmin.deleteGalleryImage(img.id);
+          await loadList();
+        } catch (e) {
+          alert(e.message || "Delete failed.");
+        } finally {
+          del.disabled = false;
+        }
+      });
+
+      actions.appendChild(del);
+
+      row.appendChild(thumb);
+      row.appendChild(meta);
+      row.appendChild(actions);
+
+      return row;
+    }
+
+    async function loadList(){
+      listStatus.textContent = "Loading…";
+      clear(list);
+      try {
+        const data = await window.smrAdmin.getGallery();
+        const imgs = data.images || [];
+        if (!imgs.length) {
+          listStatus.textContent = "No images uploaded yet.";
+          return;
+        }
+        listStatus.textContent = `Showing ${imgs.length} image(s).`;
+        for (const img of imgs) {
+          list.appendChild(renderRow(img));
+        }
+      } catch (e) {
+        listStatus.textContent = "Failed to load gallery list.";
+      }
+    }
+
+    uploadForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hide(uploadAlert);
+      hide(uploadOk);
+
+      const file = document.getElementById("file").files[0];
+      const category = document.getElementById("category").value.trim();
+      const alt = document.getElementById("alt").value.trim();
+
+      if (!file) {
+        show(uploadAlert, "Please choose an image file.");
+        return;
+      }
+      if (!category) {
+        show(uploadAlert, "Category is required.");
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      const original = uploadBtn.textContent;
+      uploadBtn.textContent = "Uploading…";
+
+      try {
+        await window.smrAdmin.uploadGalleryImage(file, category, alt);
+        show(uploadOk, "Uploaded successfully.");
+        uploadForm.reset();
+        await loadList();
+      } catch (e) {
+        show(uploadAlert, e.message || "Upload failed.");
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = original;
+      }
+    });
+
+    refreshBtn?.addEventListener("click", loadList);
+
+    (async () => {
+      try {
+        await requireAdmin();
+      } catch {}
+      await loadList();
+    })();
+  </script>
+</body>
+</html>

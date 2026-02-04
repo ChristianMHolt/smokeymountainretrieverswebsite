@@ -79,12 +79,34 @@
       max-width: 58rem;
     }
 
-    /* "Rows of images" – responsive grid that becomes rows naturally */
+    .section-head{
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(15,23,42,.10);
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cat-title{
+      font-weight: 950;
+      letter-spacing: -.3px;
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    .cat-count{
+      color: var(--muted);
+      font-weight: 750;
+      font-size: .95rem;
+      margin: 0;
+    }
+
     .g-grid{
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1rem;
-      margin-top: 1.25rem;
+      margin-top: 1rem;
     }
     .g-item{
       grid-column: span 3;
@@ -159,24 +181,8 @@
           </div>
         </div>
 
-        <div class="g-grid" id="full-gallery">
-          <!-- Add as many as you want: data-full should point to full-res image -->
-          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/bear-511x582.png" data-alt="Bear">
-            <img class="img-fit" src="assets/images/bear-511x582.png" alt="Bear" loading="lazy" decoding="async">
-          </div>
-
-          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/maple-511x595.png" data-alt="Maple">
-            <img class="img-fit" src="assets/images/maple-511x595.png" alt="Maple" loading="lazy" decoding="async">
-          </div>
-
-          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/img-672-511x681.png" data-alt="Puppy">
-            <img class="img-fit" src="assets/images/img-672-511x681.png" alt="Puppy" loading="lazy" decoding="async">
-          </div>
-
-          <div class="g-item" data-bs-toggle="modal" data-bs-target="#galleryModal" data-full="assets/images/lastlitter-511x383.png" data-alt="Last litter">
-            <img class="img-fit" src="assets/images/lastlitter-511x383.png" alt="Last litter" loading="lazy" decoding="async">
-          </div>
-        </div>
+        <div id="status" class="subtitle" style="margin-top: 1rem;">Loading photos…</div>
+        <div id="galleryRoot"></div>
       </section>
     </div>
 
@@ -197,8 +203,9 @@
 
   <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
+    const statusEl = document.getElementById("status");
+    const root = document.getElementById("galleryRoot");
     const modalImg = document.getElementById("galleryModalImg");
-    const grid = document.getElementById("full-gallery");
 
     let lastFull = null;
     let lastAlt = "Expanded gallery";
@@ -209,17 +216,93 @@
       modalImg.alt = altText || "Expanded gallery";
     }
 
-    grid?.addEventListener("click", (e) => {
-      const item = e.target.closest(".g-item");
-      if (!item) return;
-      lastFull = item.getAttribute("data-full");
-      lastAlt = item.getAttribute("data-alt") || item.querySelector("img")?.alt || "Expanded gallery";
-      setModalImage(lastFull, lastAlt);
-    });
+    function clear(node){
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
 
-    document.getElementById("galleryModal")?.addEventListener("show.bs.modal", () => {
-      if (lastFull) setModalImage(lastFull, lastAlt);
-    });
+    function makeItem(img){
+      const item = document.createElement("div");
+      item.className = "g-item";
+      item.setAttribute("data-bs-toggle", "modal");
+      item.setAttribute("data-bs-target", "#galleryModal");
+      item.setAttribute("data-full", img.url);
+      item.setAttribute("data-alt", img.alt || "");
+
+      const im = document.createElement("img");
+      im.className = "img-fit";
+      im.src = img.url;
+      im.alt = img.alt || "Gallery photo";
+      im.loading = "lazy";
+      im.decoding = "async";
+
+      item.appendChild(im);
+      return item;
+    }
+
+    function renderGroups(groups){
+      clear(root);
+
+      if (!groups.length) {
+        statusEl.textContent = "No gallery photos yet.";
+        return;
+      }
+
+      statusEl.textContent = "";
+
+      for (const g of groups) {
+        const head = document.createElement("div");
+        head.className = "section-head";
+
+        const h = document.createElement("h2");
+        h.className = "cat-title";
+        h.textContent = g.category || "Uncategorized";
+
+        const count = document.createElement("p");
+        count.className = "cat-count";
+        const n = (g.images || []).length;
+        count.textContent = `${n} photo${n === 1 ? "" : "s"}`;
+
+        head.appendChild(h);
+        head.appendChild(count);
+
+        const grid = document.createElement("div");
+        grid.className = "g-grid";
+
+        for (const img of (g.images || [])) {
+          grid.appendChild(makeItem(img));
+        }
+
+        // click handler per-grid
+        grid.addEventListener("click", (e) => {
+          const item = e.target.closest(".g-item");
+          if (!item) return;
+          lastFull = item.getAttribute("data-full");
+          lastAlt = item.getAttribute("data-alt") || item.querySelector("img")?.alt || "Expanded gallery";
+          setModalImage(lastFull, lastAlt);
+        });
+
+        root.appendChild(head);
+        root.appendChild(grid);
+      }
+
+      document.getElementById("galleryModal")?.addEventListener("show.bs.modal", () => {
+        if (lastFull) setModalImage(lastFull, lastAlt);
+      });
+    }
+
+    async function load(){
+      try {
+        const res = await fetch("/gallery-data", { headers: { "Accept": "application/json" } });
+        if (!res.ok) throw new Error("failed");
+        const data = await res.json();
+        const groups = Array.isArray(data.groups) ? data.groups : [];
+        renderGroups(groups);
+      } catch {
+        statusEl.textContent = "Gallery is unavailable right now. Please check back soon.";
+      }
+    }
+
+    load();
   </script>
 </body>
 </html>

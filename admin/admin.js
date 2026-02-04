@@ -22,8 +22,8 @@ window.smrAdmin = (() => {
     return jsonOrThrow(res);
   }
 
-  async function getCodes() {
-    const res = await fetch(`${BASE.replace("/admin", "/admin")}/codes?limit=500`, {
+  async function getCodes(limit = 500) {
+    const res = await fetch(`${BASE}/codes?limit=${encodeURIComponent(limit)}`, {
       credentials: "include",
       headers: headers()
     });

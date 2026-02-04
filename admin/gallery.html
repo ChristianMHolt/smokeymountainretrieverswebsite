@@ -266,6 +266,13 @@
     const list = document.getElementById("list");
     const refreshBtn = document.getElementById("refreshBtn");
 
+    function normUrl(u){
+      const s = String(u || "").trim();
+      if (!s) return "";
+      if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("/")) return s;
+      return "/" + s; // <-- critical: make it absolute
+    }
+
     function show(el, msg){
       el.textContent = msg;
       el.classList.remove("d-none");
@@ -289,15 +296,17 @@
       const row = document.createElement("div");
       row.className = "row-item";
 
+      const url = normUrl(img.url);
+
       const thumb = document.createElement("a");
       thumb.className = "thumb";
-      thumb.href = img.url;
+      thumb.href = url;
       thumb.target = "_blank";
       thumb.rel = "noopener";
       thumb.title = "Open full image in new tab";
 
       const im = document.createElement("img");
-      im.src = img.url;
+      im.src = url;
       im.alt = img.alt || img.category || "Gallery image";
       im.loading = "lazy";
       im.decoding = "async";
@@ -316,7 +325,7 @@
 
       const small = document.createElement("p");
       small.className = "small";
-      small.textContent = img.url;
+      small.textContent = url;
 
       meta.appendChild(name);
       meta.appendChild(cat);
@@ -412,9 +421,7 @@
     refreshBtn?.addEventListener("click", loadList);
 
     (async () => {
-      try {
-        await requireAdmin();
-      } catch {}
+      try { await requireAdmin(); } catch {}
       await loadList();
     })();
   </script>

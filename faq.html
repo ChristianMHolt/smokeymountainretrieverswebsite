@@ -180,16 +180,6 @@
     }
     .k-list li{ margin: .45rem 0; }
 
-    .callout{
-      margin-top: 1.25rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(47,191,113,.25);
-      background: rgba(47,191,113,.08);
-      padding: 1rem 1.1rem;
-      font-weight: 700;
-      color: rgba(15,23,42,.82);
-    }
-
     .btn-outline-primary{
       border-color: rgba(47,191,113,.45);
       color: var(--brand);
@@ -365,17 +355,28 @@
           </div>
         </div>
 
+        <!-- CHANGED: Puppy Care Overview now uses the same accordion styling -->
         <div class="section-h mt-5">
           <h2 class="m-0" style="font-weight: 980; letter-spacing: -.4px;">Puppy Care Overview (While in Our Care)</h2>
         </div>
 
-        <div class="callout">
-          We work hard to set every puppy up for success with consistent daily care and early development support, including:
-          <ul class="k-list">
-            <li>Age-appropriate enrichment and early training exposure multiple times per day</li>
-            <li>A 5-way vaccination at 6 weeks (as appropriate for age and per veterinary guidance)</li>
-            <li>Scheduled deworming</li>
-          </ul>
+        <div class="accordion mt-3" id="careAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="ch1">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cc1" aria-expanded="true" aria-controls="cc1">
+                What we do daily to set puppies up for success
+              </button>
+            </h2>
+            <div id="cc1" class="accordion-collapse collapse show" aria-labelledby="ch1" data-bs-parent="#careAccordion">
+              <div class="accordion-body">
+                <ul class="k-list">
+                  <li>Age-appropriate enrichment and early training exposure multiple times per day</li>
+                  <li>A 5-way vaccination at 6 weeks (as appropriate for age and per veterinary guidance)</li>
+                  <li>Scheduled deworming</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="section-h mt-4">

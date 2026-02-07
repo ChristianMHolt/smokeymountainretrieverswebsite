@@ -176,6 +176,32 @@
       font-weight: 900;
       border-radius: 14px;
     }
+
+    /* NEW: last upload card */
+    .info-card{
+      padding: .85rem 1rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.92);
+    }
+    .info-title{
+      margin: 0;
+      font-weight: 950;
+      letter-spacing: -.2px;
+      font-size: 1rem;
+      color: rgba(15,23,42,.85);
+    }
+    .info-value{
+      margin: .25rem 0 0;
+      font-weight: 800;
+      color: rgba(15,23,42,.9);
+    }
+    .info-muted{
+      margin: .35rem 0 0;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: .95rem;
+    }
   </style>
 </head>
 <body>
@@ -206,7 +232,20 @@
           </div>
         </div>
 
+        <!-- NEW: Last upload info -->
         <div class="row g-3 mt-3">
+          <div class="col-12">
+            <div class="info-card">
+              <p class="info-title">Last photo uploaded</p>
+              <p class="info-value" id="lastUploadedValue">Loading…</p>
+              <p class="info-muted mb-0">
+                Shows the most recent upload time from the gallery database (if available).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-2">
           <div class="col-12 col-lg-5">
             <div class="card-lite p-4">
               <h2 class="h5" style="font-weight:950; letter-spacing:-.3px;">Upload an image</h2>
@@ -266,11 +305,13 @@
     const list = document.getElementById("list");
     const refreshBtn = document.getElementById("refreshBtn");
 
+    const lastUploadedValue = document.getElementById("lastUploadedValue");
+
     function normUrl(u){
       const s = String(u || "").trim();
       if (!s) return "";
       if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("/")) return s;
-      return "/" + s; // <-- critical: make it absolute
+      return "/" + s; // make absolute
     }
 
     function show(el, msg){
@@ -290,6 +331,60 @@
       if (!me.is_admin) {
         window.location.href = "/admin/login.html?next=/admin/gallery.html";
       }
+    }
+
+    function parseDateMaybe(v){
+      // Supports: ISO strings, "YYYY-MM-DD HH:MM:SS" (sqlite), or epoch numbers
+      if (v == null) return null;
+      if (typeof v === "number" && Number.isFinite(v)) {
+        const d = new Date(v * 1000); // if backend gives unix seconds
+        return isNaN(d.getTime()) ? null : d;
+      }
+      const s = String(v).trim();
+      if (!s) return null;
+
+      // sqlite "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM:SS"
+      const isoish = s.includes(" ") && !s.includes("T") ? s.replace(" ", "T") : s;
+      const d = new Date(isoish);
+      if (isNaN(d.getTime())) return null;
+      return d;
+    }
+
+    function fmtLocal(d){
+      try {
+        return new Intl.DateTimeFormat(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "2-digit"
+        }).format(d);
+      } catch {
+        return d.toString();
+      }
+    }
+
+    function updateLastUploaded(images){
+      if (!lastUploadedValue) return;
+
+      // Prefer explicit server-provided field if present in any image row
+      let best = null;
+      for (const img of images || []) {
+        const d = parseDateMaybe(img.created_at || img.uploaded_at || img.createdAt || img.uploadedAt);
+        if (d && (!best || d > best)) best = d;
+      }
+
+      if (!images || !images.length) {
+        lastUploadedValue.textContent = "No images uploaded yet.";
+        return;
+      }
+
+      if (!best) {
+        lastUploadedValue.textContent = "Unknown (backend not providing upload timestamp)";
+        return;
+      }
+
+      lastUploadedValue.textContent = fmtLocal(best);
     }
 
     function renderRow(img){
@@ -370,6 +465,9 @@
       try {
         const data = await window.smrAdmin.getGallery();
         const imgs = data.images || [];
+
+        updateLastUploaded(imgs);
+
         if (!imgs.length) {
           listStatus.textContent = "No images uploaded yet.";
           return;
@@ -380,6 +478,7 @@
         }
       } catch (e) {
         listStatus.textContent = "Failed to load gallery list.";
+        if (lastUploadedValue) lastUploadedValue.textContent = "Failed to load.";
       }
     }
 
